@@ -1,110 +1,735 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/componentes.css">
-  <link rel="stylesheet" href="css/paginas/relatorios.css">
-  <title>Relatórios</title>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="stylesheet"
+          href="{{ url_for(
+              'static',
+              filename='css/base.css'
+          ) }}">
+
+
+    <link rel="stylesheet"
+          href="{{ url_for(
+              'static',
+              filename='css/layout.css'
+          ) }}">
+
+
+    <link rel="stylesheet"
+          href="{{ url_for(
+              'static',
+              filename='css/componentes.css'
+          ) }}">
+
+
+    <link rel="stylesheet"
+          href="{{ url_for(
+              'static',
+              filename='css/paginas/relatorios.css'
+          ) }}">
+
+
+    <title>Relatórios</title>
+
 </head>
+
+
 <body>
 
-  <div id="sidebar"></div>
 
-    <!-- Area Principal -->
-    <main class="content">
-      
-      <div class="container-relatorios">
-        <!-- Alternador Relatórios / Documentos -->
-        <nav class="toggle-pilula compacto">
-          <a href="relatorios.html" class="toggle-btn ativo">Relatórios</a>
-          <a href="documentos.html" class="toggle-btn">Documentos</a>
-        </nav>
+<div id="sidebar"></div>
 
-        
-        <!-- Cabecalho da Página -->
-        <div class="cabecalho-relatorios">
-          <h1>Relatórios</h1>
-          <p>Filtros, relatórios e exportação de dados.</p>
+
+<main class="content">
+
+
+<div class="container-relatorios">
+
+
+    <!-- ========================================= -->
+    <!-- MENU -->
+    <!-- ========================================= -->
+
+    <nav class="toggle-pilula compacto">
+
+        <a href="{{ url_for('pagina_relatorios') }}"
+           class="toggle-btn ativo">
+
+            Relatórios
+
+        </a>
+
+
+        <a href="#"
+           class="toggle-btn">
+
+            Documentos
+
+        </a>
+
+    </nav>
+
+
+    <!-- ========================================= -->
+    <!-- CABEÇALHO -->
+    <!-- ========================================= -->
+
+    <div class="cabecalho-relatorios">
+
+        <h1>
+            Relatórios
+        </h1>
+
+
+        <p>
+            Filtros, relatórios e exportação de dados.
+        </p>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- FILTROS -->
+    <!-- ========================================= -->
+
+    <div class="caixa-relatorios">
+
+        <h2 class="titulo-caixa">
+
+            FILTROS GLOBAIS
+
+        </h2>
+
+
+        <div class="grid-filtros">
+
+
+            <!-- PERÍODO -->
+
+            <div class="item-filtro">
+
+                <label for="periodo">
+                    Período
+                </label>
+
+
+                <select
+                    id="periodo"
+                    class="select-filtro">
+
+                    <option value="mensal">
+                        Mês atual
+                    </option>
+
+                    <option value="semanal">
+                        Últimos 7 dias
+                    </option>
+
+                    <option value="anual">
+                        Ano atual
+                    </option>
+
+                    <option value="personalizado">
+                        Personalizado
+                    </option>
+
+                </select>
+
+
+                <span
+                    id="texto-periodo"
+                    class="ajuda-filtro">
+
+                    Mês atual
+
+                </span>
+
+            </div>
+
+
+            <!-- MODALIDADE -->
+
+            <div class="item-filtro">
+
+                <label for="modalidade">
+
+                    Modalidade
+
+                </label>
+
+
+                <select
+                    id="modalidade"
+                    class="select-filtro">
+
+                    <option value="todas">
+                        Todas
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- FREQUÊNCIA -->
+
+            <div class="item-filtro">
+
+                <label for="frequencia-minima">
+
+                    Frequência mínima
+
+                </label>
+
+
+                <select
+                    id="frequencia-minima"
+                    class="select-filtro">
+
+                    <option value="0">
+                        0%
+                    </option>
+
+                    <option value="50">
+                        50%
+                    </option>
+
+                    <option value="70">
+                        70%
+                    </option>
+
+                    <option value="75">
+                        75%
+                    </option>
+
+                    <option value="80">
+                        80%
+                    </option>
+
+                    <option value="90">
+                        90%
+                    </option>
+
+                </select>
+
+            </div>
+
         </div>
 
-        <!-- Secao 1: Filtros Globais -->
-        <div class="caixa-relatorios">
-          <h2 class="titulo-caixa">FILTROS GLOBAIS</h2>
-          
-          <div class="grid-filtros">
-            <!-- Filtro 1 -->
-            <div class="item-filtro">
-              <label>Período</label>
-              <select class="select-filtro">
-                <option>Mês atual</option>
-                <option>Mês passado</option>
-                <option>Personalizado</option>
-              </select>
-              <span class="ajuda-filtro">01/09/2026 - 21/09/2026</span>
-            </div>
-            
-            <!-- Filtro 2 -->
-            <div class="item-filtro">
-              <label>Turma</label>
-              <select class="select-filtro">
-                <option>Turma A (2º Ano)</option>
-                <option>Turma B (3º Ano)</option>
-              </select>
-            </div>
-            
-            <!-- Filtro 3 -->
-            <div class="item-filtro">
-              <label>Tipo de Dados</label>
-              <select class="select-filtro">
-                <option>Frequência</option>
-                <option>Notas</option>
-                <option>Inscrições</option>
-              </select>
-            </div>
-          </div>
+
+        <!-- BOTÃO -->
+
+        <div style="margin-top: 20px;">
+
+            <button
+                id="btn-gerar-relatorio"
+                class="btn-exportar">
+
+                Gerar relatório
+
+            </button>
+
         </div>
 
-        <!-- Seção 2: Exportação de Dados -->
-        <div class="caixa-relatorios">
-          <h2 class="titulo-caixa">EXPORTAÇÃO DE DADOS</h2>
-          
-          <div class="grid-exportacao">
-            
-            <!-- Cartão PDF -->
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- RESULTADO -->
+    <!-- ========================================= -->
+
+    <div class="caixa-relatorios">
+
+        <h2 class="titulo-caixa">
+
+            RELATÓRIO DE FREQUÊNCIA
+
+        </h2>
+
+
+        <div id="resultado-relatorio">
+
+            <p>
+
+                Selecione os filtros e clique em
+                <strong>
+                    Gerar relatório
+                </strong>.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- EXPORTAÇÃO -->
+    <!-- ========================================= -->
+
+    <div class="caixa-relatorios">
+
+        <h2 class="titulo-caixa">
+
+            EXPORTAÇÃO DE DADOS
+
+        </h2>
+
+
+        <div class="grid-exportacao">
+
+
+            <!-- PDF -->
+
             <div class="cartao-exportacao">
-              <div class="icone-box icone-pdf">
-                <img src="images/pdf-icon.png" alt="PDF">
-              </div>
-              <div class="conteudo-exportacao">
-                <h3>GERAR RELATÓRIO PDF</h3>
-                <p>Relatório de Frequência e Presença</p>
-                <button class="btn-exportar">Exportar para PDF</button>
-              </div>
-            </div>
-            
-            <!-- Cartão Excel -->
-            <div class="cartao-exportacao">
-              <div class="icone-box icone-excel">
-                <img src="images/xlsx-icon.png" alt="Excel">
-              </div>
-              <div class="conteudo-exportacao">
-                <h3>EXPORTAR PLANILHA EXCEL</h3>
-                <p>Tabela de Dados Brutos</p>
-                <button class="btn-exportar">Exportar para Excel</button>
-              </div>
+
+                <div class="icone-box icone-pdf">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/pdf-icon.png'
+                        ) }}"
+                        alt="PDF">
+
+                </div>
+
+
+                <div class="conteudo-exportacao">
+
+                    <h3>
+                        GERAR RELATÓRIO PDF
+                    </h3>
+
+
+                    <p>
+                        Relatório de Frequência e Presença
+                    </p>
+
+
+                    <button
+                        id="btn-pdf"
+                        class="btn-exportar">
+
+                        Exportar para PDF
+
+                    </button>
+
+                </div>
+
             </div>
 
-          </div>
+
+            <!-- EXCEL -->
+
+            <div class="cartao-exportacao">
+
+                <div class="icone-box icone-excel">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/xlsx-icon.png'
+                        ) }}"
+                        alt="Excel">
+
+                </div>
+
+
+                <div class="conteudo-exportacao">
+
+                    <h3>
+                        EXPORTAR PLANILHA EXCEL
+                    </h3>
+
+
+                    <p>
+                        Tabela de Dados Brutos
+                    </p>
+
+
+                    <button
+                        id="btn-excel"
+                        class="btn-exportar">
+
+                        Exportar para Excel
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
         </div>
 
-      </div>
+    </div>
 
-    </main>
 
-  <script src="js/script.js"></script>
+</div>
+
+</main>
+
+
+<script>
+
+// =====================================================
+// CARREGAR MODALIDADES
+// =====================================================
+
+async function carregarModalidades() {
+
+    try {
+
+        const resposta =
+            await fetch("/modalidades");
+
+
+        const modalidades =
+            await resposta.json();
+
+
+        const select =
+            document.getElementById(
+                "modalidade"
+            );
+
+
+        select.innerHTML = `
+            <option value="todas">
+                Todas
+            </option>
+        `;
+
+
+        modalidades.forEach(item => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                item.modalidade;
+
+
+            option.textContent =
+                item.modalidade;
+
+
+            select.appendChild(
+                option
+            );
+
+        });
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar modalidades:",
+            erro
+        );
+
+    }
+
+}
+
+
+
+// =====================================================
+// GERAR RELATÓRIO
+// =====================================================
+
+async function gerarRelatorio() {
+
+
+    const periodo =
+        document.getElementById(
+            "periodo"
+        ).value;
+
+
+    const modalidade =
+        document.getElementById(
+            "modalidade"
+        ).value;
+
+
+    const frequenciaMinima =
+        document.getElementById(
+            "frequencia-minima"
+        ).value;
+
+
+    let url =
+        "/relatorio/frequencia";
+
+
+    url +=
+        "?periodo=" +
+        periodo;
+
+
+    url +=
+        "&modalidade=" +
+        encodeURIComponent(
+            modalidade
+        );
+
+
+    url +=
+        "&frequencia_minima=" +
+        frequenciaMinima;
+
+
+    url +=
+        "&frequencia_maxima=100";
+
+
+    try {
+
+        const resposta =
+            await fetch(url);
+
+
+        const dados =
+            await resposta.json();
+
+
+        if (!resposta.ok) {
+
+            alert(
+                dados.erro
+            );
+
+            return;
+
+        }
+
+
+        mostrarRelatorio(
+            dados
+        );
+
+
+    } catch (erro) {
+
+        console.error(
+            erro
+        );
+
+
+        alert(
+            "Erro ao conectar com o servidor."
+        );
+
+    }
+
+}
+
+
+
+// =====================================================
+// MOSTRAR RESULTADO
+// =====================================================
+
+function mostrarRelatorio(dados) {
+
+
+    const div =
+        document.getElementById(
+            "resultado-relatorio"
+        );
+
+
+    if (
+        dados.alunos.length === 0
+    ) {
+
+        div.innerHTML = `
+
+            <p>
+                Nenhum aluno encontrado
+                com esses filtros.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <p>
+
+            Período:
+
+            <strong>
+                ${dados.data_inicio}
+            </strong>
+
+            até
+
+            <strong>
+                ${dados.data_fim}
+            </strong>
+
+        </p>
+
+
+        <table class="tabela-relatorio">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Aluno
+                    </th>
+
+                    <th>
+                        Modalidade
+                    </th>
+
+                    <th>
+                        Dias
+                    </th>
+
+                    <th>
+                        Horário
+                    </th>
+
+                    <th>
+                        Aulas
+                    </th>
+
+                    <th>
+                        Presenças
+                    </th>
+
+                    <th>
+                        Faltas
+                    </th>
+
+                    <th>
+                        Frequência
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+    `;
+
+
+    dados.alunos.forEach(
+        aluno => {
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${aluno.nome}
+                    </td>
+
+                    <td>
+                        ${aluno.modalidade}
+                    </td>
+
+                    <td>
+                        ${aluno.dias}
+                    </td>
+
+                    <td>
+                        ${aluno.horario}
+                    </td>
+
+                    <td>
+                        ${aluno.total_aulas}
+                    </td>
+
+                    <td>
+                        ${aluno.presencas}
+                    </td>
+
+                    <td>
+                        ${aluno.faltas}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${aluno.frequencia}%
+                        </strong>
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    div.innerHTML =
+        html;
+
+}
+
+
+
+// =====================================================
+// BOTÃO GERAR
+// =====================================================
+
+document
+    .getElementById(
+        "btn-gerar-relatorio"
+    )
+    .addEventListener(
+        "click",
+        gerarRelatorio
+    );
+
+
+
+// =====================================================
+// INICIAR
+// =====================================================
+
+carregarModalidades();
+
+</script>
+
+
+</body>
+
+</html>
 
 </body>
 </html>
