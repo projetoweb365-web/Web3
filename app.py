@@ -1,12 +1,21 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
+import mysql.connector
 
-app = Flask(__name__)
+ccb = Flask(__name__)
 
+conexao = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="senha",
+    database="centro_cidadania_do_brasil"
+)
+
+cursor = conexao.cursor()
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-
-app.run()
+if __name__ == "__main__":
+    ccb.run(debug=True)
