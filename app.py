@@ -12,10 +12,13 @@ conexao = mysql.connector.connect(
 
 cursor = conexao.cursor()
 
-@app.route("/")
+@ccb.route("/")
 def home():
     return render_template("index.html")
 
+import criar_conta
+import entrar
+import formulario
 
 if __name__ == "__main__":
     ccb.run(debug=True)
