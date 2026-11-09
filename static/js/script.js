@@ -79,6 +79,12 @@ function alternarAba(aba) {
 /* 3) FORMULARIO: botão "Enviar" Por enquanto só leva para a tela de relatorios; quando houver backend,
    é aqui que os dados do formulário devem ser enviados. */
 
+<!--Botao Enviar-->
+        <button class="btn-enviar" onclick="mostrarRelatorio()">Enviar →</button>
+
+/*4)PRESENCA: seleção de alunos, marcar presente/ausente e atualização dos cartões.
+Por enquanto só altera a tela quando houver backend, é aqui que a chamada deve ser enviada*/
+
 document.addEventListener('DOMContentLoaded', () => {
   const tbody = document.querySelector('.tabela-frequencia tbody');
   if (!tbody) return;
