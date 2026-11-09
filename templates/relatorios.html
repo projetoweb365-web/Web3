@@ -1,110 +1,330 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="static/css/base.css">
-  <link rel="stylesheet" href="static/css/layout.css">
-  <link rel="stylesheet" href="static/css/componentes.css">
-  <link rel="stylesheet" href="static/css/paginas/relatorios.css">
-  <title>Relatórios</title>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/base.css') }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/layout.css') }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/componentes.css') }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/paginas/relatorios.css') }}">
+
+    <title>Documentos</title>
+
 </head>
+
+
 <body>
 
-  <div id="sidebar"></div>
 
-    <!-- Area Principal -->
-    <main class="content">
-      
-      <div class="container-relatorios">
-        <!-- Alternador Relatórios / Documentos -->
+<div id="sidebar"></div>
+
+
+<main class="content">
+
+    <div class="container-relatorios">
+
+
+        <!-- =========================================
+             ALTERNADOR
+        ========================================== -->
+
         <nav class="toggle-pilula compacto">
-          <a href="relatorios.html" class="toggle-btn ativo">Relatórios</a>
-          <a href="documentos.html" class="toggle-btn">Documentos</a>
+
+            <a
+                href="{{ url_for('pagina_relatorios') }}"
+                class="toggle-btn">
+
+                Relatórios
+
+            </a>
+
+
+            <a
+                href="{{ url_for('pagina_documentos') }}"
+                class="toggle-btn ativo">
+
+                Documentos
+
+            </a>
+
         </nav>
 
-        
-        <!-- Cabecalho da Página -->
+
+        <!-- =========================================
+             CABEÇALHO
+        ========================================== -->
+
         <div class="cabecalho-relatorios">
-          <h1>Relatórios</h1>
-          <p>Filtros, relatórios e exportação de dados.</p>
+
+            <h1>Documentos</h1>
+
+            <p>
+                Envie e baixe documentos da ONG.
+            </p>
+
         </div>
 
-        <!-- Secao 1: Filtros Globais -->
+
+        <!-- =========================================
+             UPLOAD
+        ========================================== -->
+
         <div class="caixa-relatorios">
-          <h2 class="titulo-caixa">FILTROS GLOBAIS</h2>
-          
-          <div class="grid-filtros">
-            <!-- Filtro 1 -->
-            <div class="item-filtro">
-              <label>Período</label>
-              <select class="select-filtro">
-                <option>Mês atual</option>
-                <option>Mês passado</option>
-                <option>Personalizado</option>
-              </select>
-              <span class="ajuda-filtro">01/09/2026 - 21/09/2026</span>
-            </div>
-            
-            <!-- Filtro 2 -->
-            <div class="item-filtro">
-              <label>Turma</label>
-              <select class="select-filtro">
-                <option>Turma A (2º Ano)</option>
-                <option>Turma B (3º Ano)</option>
-              </select>
-            </div>
-            
-            <!-- Filtro 3 -->
-            <div class="item-filtro">
-              <label>Tipo de Dados</label>
-              <select class="select-filtro">
-                <option>Frequência</option>
-                <option>Notas</option>
-                <option>Inscrições</option>
-              </select>
-            </div>
-          </div>
+
+            <h2 class="titulo-caixa">
+                ENVIAR ARQUIVO
+            </h2>
+
+
+            <form
+                id="formUpload"
+                enctype="multipart/form-data">
+
+
+                <input
+                    type="file"
+                    id="arquivo"
+                    name="arquivo"
+                    accept=".pdf,.xlsx,.xls">
+
+
+                <button
+                    type="submit"
+                    class="btn-exportar">
+
+                    Enviar arquivo
+
+                </button>
+
+
+            </form>
+
+
+            <p id="mensagem"></p>
+
         </div>
 
-        <!-- Seção 2: Exportação de Dados -->
+
+        <!-- =========================================
+             ARQUIVOS
+        ========================================== -->
+
         <div class="caixa-relatorios">
-          <h2 class="titulo-caixa">EXPORTAÇÃO DE DADOS</h2>
-          
-          <div class="grid-exportacao">
-            
-            <!-- Cartão PDF -->
-            <div class="cartao-exportacao">
-              <div class="icone-box icone-pdf">
-                <img src="static/images/pdf-icon.png" alt="PDF">
-              </div>
-              <div class="conteudo-exportacao">
-                <h3>GERAR RELATÓRIO PDF</h3>
-                <p>Relatório de Frequência e Presença</p>
-                <button class="btn-exportar">Exportar para PDF</button>
-              </div>
-            </div>
-            
-            <!-- Cartão Excel -->
-            <div class="cartao-exportacao">
-              <div class="icone-box icone-excel">
-                <img src="static/images/xlsx-icon.png" alt="Excel">
-              </div>
-              <div class="conteudo-exportacao">
-                <h3>EXPORTAR PLANILHA EXCEL</h3>
-                <p>Tabela de Dados Brutos</p>
-                <button class="btn-exportar">Exportar para Excel</button>
-              </div>
-            </div>
 
-          </div>
+            <h2 class="titulo-caixa">
+                ARQUIVOS DISPONÍVEIS
+            </h2>
+
+
+            <table border="1">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Nome
+                        </th>
+
+                        <th>
+                            Tipo
+                        </th>
+
+                        <th>
+                            Data
+                        </th>
+
+                        <th>
+                            Ação
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="listaArquivos">
+
+                </tbody>
+
+            </table>
+
         </div>
 
-      </div>
 
-    </main>
+    </div>
 
-  <script src="static/js/script.js"></script>
+</main>
+
+
+<script src="{{ url_for('static', filename='js/documentos.js') }}"></script>
+
 
 </body>
+
 </html>
+
+<script>
+// =====================================================
+// CARREGAR ARQUIVOS
+// =====================================================
+
+async function carregarArquivos() {
+
+    const resposta =
+        await fetch("/arquivos");
+
+
+    const arquivos =
+        await resposta.json();
+
+
+    const tabela =
+        document.getElementById(
+            "listaArquivos"
+        );
+
+
+    tabela.innerHTML = "";
+
+
+    arquivos.forEach(function(arquivo) {
+
+        const linha =
+            document.createElement("tr");
+
+
+        linha.innerHTML = `
+
+            <td>
+                ${arquivo.nome_original}
+            </td>
+
+            <td>
+                ${arquivo.tipo}
+            </td>
+
+            <td>
+                ${arquivo.data_upload}
+            </td>
+
+            <td>
+
+                <a
+                    href="/download/${arquivo.id}">
+
+                    Baixar
+
+                </a>
+
+            </td>
+
+        `;
+
+
+        tabela.appendChild(
+            linha
+        );
+
+    });
+
+}
+
+
+
+// =====================================================
+// UPLOAD
+// =====================================================
+
+document
+    .getElementById("formUpload")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const arquivo =
+                document.getElementById(
+                    "arquivo"
+                ).files[0];
+
+
+            if (!arquivo) {
+
+                alert(
+                    "Selecione um arquivo."
+                );
+
+                return;
+
+            }
+
+
+            const formulario =
+                new FormData();
+
+
+            formulario.append(
+                "arquivo",
+                arquivo
+            );
+
+
+            const resposta =
+                await fetch(
+                    "/upload",
+                    {
+
+                        method: "POST",
+
+                        body: formulario
+
+                    }
+                );
+
+
+            const resultado =
+                await resposta.json();
+
+
+            document.getElementById(
+                "mensagem"
+            ).textContent =
+                resultado.mensagem
+                ||
+                resultado.erro;
+
+
+            carregarArquivos();
+
+        }
+    );
+
+
+// =====================================================
+// CARREGAR AO ABRIR A PÁGINA
+// =====================================================
+
+carregarArquivos();
+
+</script>
