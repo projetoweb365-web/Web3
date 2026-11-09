@@ -58,3 +58,16 @@ CREATE TABLE inscricoes (
     FOREIGN KEY (usuario_id)
     REFERENCES usuarios(id)
 );
+
+CREATE TABLE frequencias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    inscricao_id INT NOT NULL,
+
+    data_aula DATE NOT NULL,
+
+    presente TINYINT(1) NOT NULL,
+
+    FOREIGN KEY (inscricao_id)
+    REFERENCES inscricoes(id)
+);
