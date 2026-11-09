@@ -69,7 +69,7 @@ CREATE TABLE frequencias (
     presente TINYINT(1) NOT NULL,
 
     FOREIGN KEY (inscricao_id)
-    REFERENCES inscricoes(id)
+        REFERENCES inscricoes(id)
 );
 
 CREATE TABLE arquivos (
