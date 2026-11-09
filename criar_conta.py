@@ -1,16 +1,5 @@
-from flask import Flask, request
-import mysql.connector
-
-ccb = Flask(__name__)
-
-conexao = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="senha",
-    database="centro_cidadania_do_brasil"
-)
-
-cursor = conexao.cursor()
+from app import ccb, conexao, cursor
+from flask import request
 
 @ccb.route("/cadastro", methods=["POST"])
 def criar_conta():
@@ -58,6 +47,3 @@ def criar_conta():
         "success": True,
         "message": "Conta criada com sucesso!"
     }
-
-if __name__ == "__main__":
-    ccb.run(debug=True)
