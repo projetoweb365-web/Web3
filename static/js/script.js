@@ -1,4 +1,4 @@
-/*Seções: 1) Sidebar  2) Login  3) Formulário 4)PRESENCA */
+/*Seções: 1) Sidebar  2) Login  3) Formulário 4) Presenca */
 
 
 /* SIDEBAR  */
