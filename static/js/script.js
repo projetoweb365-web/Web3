@@ -39,7 +39,7 @@ function renderizarSidebar() {
           </div>
         </div>
         <a href="login.html" class="btn-sair">
-          <img src="images/logout.png" alt="Sair" class="icone-sair">
+          <img src="static/images/logout.png" alt="Sair" class="icone-sair">
           <span>Sair</span>
         </a>
       </div>
