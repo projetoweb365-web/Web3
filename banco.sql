@@ -74,8 +74,12 @@ CREATE TABLE frequencias (
 
 CREATE TABLE arquivos (
     id INT AUTO_INCREMENT PRIMARY KEY,
+
     nome_original VARCHAR(255) NOT NULL,
+
     nome_salvo VARCHAR(255) NOT NULL,
+
     tipo VARCHAR(50) NOT NULL,
+
     data_upload DATETIME DEFAULT CURRENT_TIMESTAMP
 );
