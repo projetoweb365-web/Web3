@@ -19,12 +19,13 @@
       <div class="formulario-container" id="tela-formulario">
         <div class="titulo">Formulário de Inscrição do Aluno</div>
 
+        <form action="/formulario" method="POST">
         <!--  INFORMACÕES GERAIS-->
         <div class="secao-titulo">INFORMAÇÕES GERAIS</div>
         <div class="caixa-cinza">
           <div class="linha">
             <div class="campo flex-total">
-              Nome do aluno(a): <input type="text" class="input-linha">
+              Nome do aluno(a): <input type="text" class="input-linha" name="nome_aluno">
             </div>
             <div class="campo">
               Nascimento: <input type="date" class="input-linha" style="width: 110px;">
@@ -37,10 +38,10 @@
               <input type="radio" name="sexo"> F
             </div>
             <div class="campo">
-              RG: <input type="text" class="input-linha" style="width: 120px;">
+              RG: <input type="text" class="input-linha" style="width: 120px;" name="rg">
             </div>
             <div class="campo">
-              CPF: <input type="text" class="input-linha" style="width: 150px;">
+              CPF: <input type="text" class="input-linha" style="width: 150px;" name="cpf">
             </div>
             <div class="campo flex-total">
               Endereço: <input type="text" class="input-linha">
@@ -190,13 +191,13 @@
         </div>
         
         <!--Botao Enviar-->
-        <button class="btn-enviar" onclick="mostrarRelatorio()">Enviar →</button>
-
+        <button type="submit" class="btn-enviar">Enviar →</button>
+        </form>
       </div> 
 
     </main>
 
-  <script src="static/js/script.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 </html>

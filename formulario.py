@@ -1,3 +1,7 @@
+from app import ccb, conexao, cursor
+from flask import request
+
+@ccb.route("/formulario", methods=["POST"])
 @ccb.route("/formulario", methods=["POST"])
 def formulario():
 

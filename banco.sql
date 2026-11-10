@@ -1,5 +1,17 @@
-CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE DATABASE IF NOT EXISTS centro_cidadania_do_brasil;
+USE centro_cidadania_do_brasil;
+CREATE TABLE IF NOT EXISTS alunos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  matricula VARCHAR(20) NOT NULL UNIQUE,
+  nome VARCHAR(100) NOT NULL
+);
+
+INSERT INTO alunos (matricula, nome) VALUES
+  ('2026001', 'Natália da Silva'),
+  ('2026002', 'Rafael Oliveira Santos'),
+  ('2026003', 'Beatriz Almeida Costa');
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,alunosalunos
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL
@@ -69,17 +81,13 @@ CREATE TABLE frequencias (
     presente TINYINT(1) NOT NULL,
 
     FOREIGN KEY (inscricao_id)
-        REFERENCES inscricoes(id)
+    REFERENCES inscricoes(id)
 );
 
 CREATE TABLE arquivos (
     id INT AUTO_INCREMENT PRIMARY KEY,
-
     nome_original VARCHAR(255) NOT NULL,
-
     nome_salvo VARCHAR(255) NOT NULL,
-
     tipo VARCHAR(50) NOT NULL,
-
     data_upload DATETIME DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,12 +1,11 @@
+from app import ccb
+from database import conectar_banco
+
 from flask import (
-    Flask,
-    render_template,
     request,
     jsonify,
     send_from_directory
 )
-
-from database import conectar_banco
 
 from datetime import date, timedelta
 
@@ -14,16 +13,16 @@ import os
 import uuid
 
 
-app = Flask(__name__)
-
-
 # =====================================================
 # CONFIGURAÇÃO DOS ARQUIVOS
 # =====================================================
 
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "uploads"
+)
 
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+ccb.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 os.makedirs(
@@ -57,34 +56,10 @@ def arquivo_permitido(nome):
 
 
 # =====================================================
-# PÁGINA DE RELATÓRIOS
-# =====================================================
-
-@app.route("/")
-def pagina_relatorios():
-
-    return render_template(
-        "relatorios.html"
-    )
-
-
-# =====================================================
-# PÁGINA DE DOCUMENTOS
-# =====================================================
-
-@app.route("/documentos")
-def pagina_documentos():
-
-    return render_template(
-        "documentos.html"
-    )
-
-
-# =====================================================
 # LISTAR INSCRIÇÕES
 # =====================================================
 
-@app.route("/inscricoes")
+@ccb.route("/inscricoes")
 def listar_inscricoes():
 
     conexao = conectar_banco()
@@ -128,7 +103,7 @@ def listar_inscricoes():
 # LISTAR MODALIDADES
 # =====================================================
 
-@app.route("/modalidades")
+@ccb.route("/modalidades")
 def listar_modalidades():
 
     conexao = conectar_banco()
@@ -174,7 +149,7 @@ def listar_modalidades():
 # REGISTRAR FREQUÊNCIA
 # =====================================================
 
-@app.route(
+@ccb.route(
     "/frequencia",
     methods=["POST"]
 )
@@ -243,7 +218,7 @@ def registrar_frequencia():
 # RELATÓRIO DE FREQUÊNCIA
 # =====================================================
 
-@app.route(
+@ccb.route(
     "/relatorio/frequencia"
 )
 def gerar_relatorio():
@@ -589,7 +564,7 @@ def gerar_relatorio():
 # UPLOAD DE ARQUIVO
 # =====================================================
 
-@app.route(
+@ccb.route(
     "/upload",
     methods=["POST"]
 )
@@ -682,7 +657,7 @@ def upload_arquivo():
 
     caminho = os.path.join(
 
-        app.config[
+        ccb.config[
             "UPLOAD_FOLDER"
         ],
 
@@ -760,7 +735,7 @@ def upload_arquivo():
 # LISTAR ARQUIVOS
 # =====================================================
 
-@app.route("/arquivos")
+@ccb.route("/arquivos")
 def listar_arquivos():
 
     conexao = conectar_banco()
@@ -814,7 +789,7 @@ def listar_arquivos():
 # DOWNLOAD
 # =====================================================
 
-@app.route(
+@ccb.route(
     "/download/<int:id>"
 )
 def baixar_arquivo(id):
@@ -862,7 +837,7 @@ def baixar_arquivo(id):
 
     return send_from_directory(
 
-        app.config[
+        ccb.config[
             "UPLOAD_FOLDER"
         ],
 
@@ -877,15 +852,4 @@ def baixar_arquivo(id):
                 "nome_original"
             ]
 
-    )
-
-
-# =====================================================
-# INICIAR SERVIDOR
-# =====================================================
-
-if __name__ == "__main__":
-
-    app.run(
-        debug=True
     )

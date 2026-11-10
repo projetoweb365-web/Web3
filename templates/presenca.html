@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="static/css/base.css">
-  <link rel="stylesheet" href="static/css/layout.css">
-  <link rel="stylesheet" href="static/css/componentes.css">
-  <link rel="stylesheet" href="static/css/paginas/presenca.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/componentes.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/paginas/presenca.css') }}">
   <title>Presença (Chamada)</title>
 </head>
-<body>
+<body data-pagina="presenca">
 
   <div id="sidebar"></div>
 
@@ -24,12 +24,20 @@
           <p>Gerencie a frequência dos alunos</p>
         </div>
 
+        <!-- Data da aula e botão de salvar -->
+        <div class="barra-chamada">
+          <label for="data-aula">Data da aula:</label>
+          <input type="date" id="data-aula">
+          <button type="button" id="btn-salvar-chamada" class="btn-salvar-chamada">Salvar chamada</button>
+          <span id="msg-chamada" class="msg-chamada"></span>
+        </div>
+
         <!-- 4 Cartões de Métricas -->
         <div class="grid-cards-chamada">
 
           <div class="card-metrica card-azul">
             <div class="card-topo">
-              <div class="icone-box box-azul"><img src="static/images/users-branco.png" alt=""></div>
+              <div class="icone-box box-azul"><img src="{{ url_for('static', filename='images/users-branco.png') }}" alt=""></div>
               <span class="card-label">TOTAL DE ALUNOS</span>
             </div>
             <div class="card-valor" id="valor-total">45</div>
@@ -37,7 +45,7 @@
 
           <div class="card-metrica card-verde">
             <div class="card-topo">
-              <div class="icone-box box-verde"><img src="static/images/check-branco.png" alt=""></div>
+              <div class="icone-box box-verde"><img src="{{ url_for('static', filename='images/check-branco.png') }}" alt=""></div>
               <span class="card-label">PRESENTES</span>
             </div>
             <div class="card-valor" id="valor-presentes">38</div>
@@ -45,7 +53,7 @@
 
           <div class="card-metrica card-vermelho">
             <div class="card-topo">
-              <div class="icone-box box-vermelha"><img src="static/images/X-branco.png" alt=""></div>
+              <div class="icone-box box-vermelha"><img src="{{ url_for('static', filename='images/X-branco.png') }}" alt=""></div>
               <span class="card-label">AUSENTES</span>
             </div>
             <div class="card-valor" id="valor-ausentes">7</div>
@@ -68,11 +76,11 @@
           <div class="tabela-acoes">
             <div class="selecao-info">
               <input type="checkbox" id="check-todos" title="Selecionar todos">
-              <span class="texto-selecionados" id="texto-selecionados">2 alunos selecionados</span>
+              <span class="texto-selecionados" id="texto-selecionados">Nenhum aluno selecionado</span>
             </div>
             <div class="botoes-acao-chamada">
-              <button class="btn-acao-verde" id="btn-marcar-presentes" type="button"><img src="static/images/check-green.png" alt=""> Marcar Presentes</button>
-              <button class="btn-acao-vermelho" id="btn-marcar-ausentes" type="button"><img src="static/images/close-red.png" alt=""> Marcar Ausentes</button>
+              <button class="btn-acao-verde" id="btn-marcar-presentes" type="button"><img src="{{ url_for('static', filename='images/check-green.png') }}" alt=""> Marcar Presentes</button>
+              <button class="btn-acao-vermelho" id="btn-marcar-ausentes" type="button"><img src="{{ url_for('static', filename='images/close-red.png') }}" alt=""> Marcar Ausentes</button>
             </div>
           </div>
 
@@ -88,276 +96,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              {% for id, nome in alunos %}
+              <tr data-id="{{ id }}">
                 <td><input type="checkbox"></td>
-                <td>2026001</td>
-                <td>Natália da Silva</td>
+                <td>{{ id }}</td>
+                <td>{{ nome }}</td>
                 <td><span class="badge badge-presente">Presente</span></td>
               </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026002</td>
-                <td>Rafael Oliveira Santos</td>
-                <td><span class="badge badge-presente">Presente</span></td>
+              {% else %}
+              <tr class="linha-vazia">
+                <td colspan="4">Nenhum aluno inscrito ainda.</td>
               </tr>
-              <tr class="linha-selecionada">
-                <td><input type="checkbox" checked></td>
-                <td>2026003</td>
-                <td>Beatriz Almeida Costa</td>
-                <td><span class="badge badge-ausente">Ausente</span></td>
-              </tr>
-              <tr class="linha-selecionada">
-                <td><input type="checkbox" checked></td>
-                <td>2026004</td>
-                <td>Lucas Ferreira Lima</td>
-                <td><span class="badge badge-ausente">Ausente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026005</td>
-                <td>Mariana Souza Pereira</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026006</td>
-                <td>Gabriel Rodrigues Alves</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026007</td>
-                <td>Juliana Carvalho Dias</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026008</td>
-                <td>Pedro Henrique Martins</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026009</td>
-                <td>Camila Ribeiro Gomes</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026010</td>
-                <td>Matheus Barbosa Nunes</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026011</td>
-                <td>Larissa Mendes Rocha</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026012</td>
-                <td>Thiago Araújo Cardoso</td>
-                <td><span class="badge badge-ausente">Ausente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026013</td>
-                <td>Isabela Moreira Freitas</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026014</td>
-                <td>Felipe Teixeira Lopes</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026015</td>
-                <td>Amanda Cunha Ramos</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026016</td>
-                <td>Bruno Correia Monteiro</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026017</td>
-                <td>Letícia Pinto Azevedo</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026018</td>
-                <td>Gustavo Castro Batista</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026019</td>
-                <td>Fernanda Nascimento Reis</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026020</td>
-                <td>Rodrigo Andrade Melo</td>
-                <td><span class="badge badge-ausente">Ausente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026021</td>
-                <td>Aline Duarte Fonseca</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026022</td>
-                <td>Vinícius Machado Vieira</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026023</td>
-                <td>Patrícia Lima Barros</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026024</td>
-                <td>Diego Campos Moura</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026025</td>
-                <td>Carolina Farias Siqueira</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026026</td>
-                <td>Leonardo Borges Tavares</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026027</td>
-                <td>Bianca Medeiros Pires</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026028</td>
-                <td>Henrique Santana Rangel</td>
-                <td><span class="badge badge-ausente">Ausente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026029</td>
-                <td>Vanessa Ramos Peixoto</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026030</td>
-                <td>Eduardo Cavalcante Neves</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026031</td>
-                <td>Priscila Gonçalves Brito</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026032</td>
-                <td>André Luiz Xavier</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026033</td>
-                <td>Renata Sampaio Leal</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026034</td>
-                <td>Caio Vasconcelos Prado</td>
-                <td><span class="badge badge-ausente">Ausente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026035</td>
-                <td>Tatiane Esteves Coelho</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026036</td>
-                <td>Marcelo Furtado Lacerda</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026037</td>
-                <td>Daniela Bastos Viana</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026038</td>
-                <td>Samuel Lacerda Guimarães</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026039</td>
-                <td>Helena Amaral Siqueira</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026040</td>
-                <td>Igor Menezes Paiva</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026041</td>
-                <td>Sabrina Torres Matos</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026042</td>
-                <td>Davi Lucas Pacheco</td>
-                <td><span class="badge badge-ausente">Ausente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026043</td>
-                <td>Yasmin Rezende Couto</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026044</td>
-                <td>Otávio Salles Brandão</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox"></td>
-                <td>2026045</td>
-                <td>Luana Figueiredo Assis</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
+              {% endfor %}
             </tbody>
           </table>
           </div> <!-- fecha tabela-scroll -->
@@ -367,8 +117,7 @@
       </div> <!-- fecha container-chamada -->
     </main>
 
-  <script src="static/js/script.js"></script>
-  <script src="static/js/presenca.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 </html>

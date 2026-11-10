@@ -1,3 +1,7 @@
+from app import ccb, conexao, cursor
+from flask import request
+
+
 @ccb.route("/login", methods=["POST"])
 def entrar():
 

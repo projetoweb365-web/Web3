@@ -1,330 +1,159 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/base.css') }}">
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/layout.css') }}">
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/componentes.css') }}">
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/paginas/relatorios.css') }}">
-
-    <title>Documentos</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="static/css/base.css">
+  <link rel="stylesheet" href="static/css/layout.css">
+  <link rel="stylesheet" href="static/css/componentes.css">
+  <link rel="stylesheet" href="static/css/paginas/documentos.css">
+  <title>Documentos</title>
 </head>
+<body data-pagina="documentos">
 
+  <div id="sidebar"></div>
 
-<body>
-
-
-<div id="sidebar"></div>
-
-
-<main class="content">
-
-    <div class="container-relatorios">
-
-
-        <!-- =========================================
-             ALTERNADOR
-        ========================================== -->
-
+    <!-- Area Principal -->
+    <main class="content">
+      
+      <div class="container-documentos">
+        <!-- Alternador Relatorios / Documentos -->
         <nav class="toggle-pilula compacto">
-
-            <a
-                href="{{ url_for('pagina_relatorios') }}"
-                class="toggle-btn">
-
-                Relatórios
-
-            </a>
-
-
-            <a
-                href="{{ url_for('pagina_documentos') }}"
-                class="toggle-btn ativo">
-
-                Documentos
-
-            </a>
-
+          <a href="relatorios.html" class="toggle-btn">Relatórios</a>
+          <a href="documentos.html" class="toggle-btn ativo">Documentos</a>
         </nav>
 
-
-        <!-- =========================================
-             CABEÇALHO
-        ========================================== -->
-
-        <div class="cabecalho-relatorios">
-
-            <h1>Documentos</h1>
-
-            <p>
-                Envie e baixe documentos da ONG.
-            </p>
-
+        
+        <!-- Cabecalho da Página -->
+        <div class="cabecalho-documentos">
+          <h1>Documentos</h1>
+          <p>Upload, visualização e gerenciamento de documentos.</p>
         </div>
 
-
-        <!-- =========================================
-             UPLOAD
-        ========================================== -->
-
-        <div class="caixa-relatorios">
-
-            <h2 class="titulo-caixa">
-                ENVIAR ARQUIVO
-            </h2>
-
-
-            <form
-                id="formUpload"
-                enctype="multipart/form-data">
-
-
-                <input
-                    type="file"
-                    id="arquivo"
-                    name="arquivo"
-                    accept=".pdf,.xlsx,.xls">
-
-
-                <button
-                    type="submit"
-                    class="btn-exportar">
-
-                    Enviar arquivo
-
-                </button>
-
-
-            </form>
-
-
-            <p id="mensagem"></p>
-
+        <!--Upload de arquivos -->
+        <div class="caixa-documentos">
+          <h2 class="titulo-caixa-centro">UPLOAD DE ARQUIVOS</h2>
+          
+          <form action="/upload" method="POST" enctype="multipart/form-data" class="area-upload">
+            <img src="static/images/upload-icon.png" alt="Upload" class="icone-upload">
+            <p>Selecione o ficheiro para envio:</p>
+            
+            <input type="file" name="arquivo" required style="margin-top: 10px;">
+            <button type="submit" style="margin-top: 15px; padding: 8px 16px; border-radius: 8px; cursor: pointer;">Fazer Upload</button>
+          </form>
+          
+          <p class="formatos-texto">Formatos: .pdf, .docx, .xlsx, .jpg (Máx.: 25Mb).</p>
         </div>
 
-
-        <!-- =========================================
-             ARQUIVOS
-        ========================================== -->
-
-        <div class="caixa-relatorios">
-
-            <h2 class="titulo-caixa">
-                ARQUIVOS DISPONÍVEIS
-            </h2>
-
-
-            <table border="1">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Nome
-                        </th>
-
-                        <th>
-                            Tipo
-                        </th>
-
-                        <th>
-                            Data
-                        </th>
-
-                        <th>
-                            Ação
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody
-                    id="listaArquivos">
-
-                </tbody>
-
+        <!--Tabela de Documentos -->
+        <div class="caixa-documentos">
+          <h2 class="titulo-caixa-esquerda">TABELA DE DOCUMENTOS SALVOS</h2>
+          
+          <div class="tabela-wrapper">
+            <table class="tabela-documentos">
+              <thead>
+                <tr>
+                  <th style="text-align: left;"><img src="static/images/file-black.png" alt="Ficheiro" class="icone-ficheiro"> Nome do Arquivo</th>
+                  <th>Categoria</th>
+                  <th>Tipo</th>
+                  <th>Responsável</th>
+                  <th>Data de Upload</th>
+                  <th>Última atualização</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="text-align: left; font-weight: bold;">Relatório Semanal</td>
+                  <td>Financeiro</td>
+                  <td>PDF</td>
+                  <td>Anderson Freire</td>
+                  <td>14/09/2026</td>
+                  <td>20/09/2026</td>
+                  <td>
+                    <div class="acoes-tabela">
+                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
+                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
+                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
+                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; font-weight: bold;">Presença Setembro 2...</td>
+                  <td>Frequencia</td>
+                  <td>Excel</td>
+                  <td>Gabriel Mansur</td>
+                  <td>01/09/2026</td>
+                  <td>18/09/2026</td>
+                  <td>
+                    <div class="acoes-tabela">
+                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
+                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
+                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
+                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; font-weight: bold;">Declaração Escolar</td>
+                  <td>Documento es...</td>
+                  <td>PDF</td>
+                  <td>Julliany Souza</td>
+                  <td>02/04/2024</td>
+                  <td>15/07/2026</td>
+                  <td>
+                    <div class="acoes-tabela">
+                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
+                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
+                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
+                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; font-weight: bold;">Termo de Parceria</td>
+                  <td>Jurídico</td>
+                  <td>Docx</td>
+                  <td>Pedro Nascime...</td>
+                  <td>16/11/2025</td>
+                  <td>28/04/2026</td>
+                  <td>
+                    <div class="acoes-tabela">
+                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
+                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
+                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
+                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; font-weight: bold;">RG Ana Costa</td>
+                  <td>Documento pe...</td>
+                  <td>PDF</td>
+                  <td>Eduarda Blossom</td>
+                  <td>20/03/2022</td>
+                  <td>12/01/2023</td>
+                  <td>
+                    <div class="acoes-tabela">
+                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
+                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
+                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
+                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
             </table>
+          </div>
 
         </div>
 
+      </div>
 
-    </div>
+    </main>
 
-</main>
-
-
-<script>
-  
-// =====================================================
-// CARREGAR ARQUIVOS
-// =====================================================
-
-async function carregarArquivos() {
-
-    const resposta =
-        await fetch("/arquivos");
-
-
-    const arquivos =
-        await resposta.json();
-
-
-    const tabela =
-        document.getElementById(
-            "listaArquivos"
-        );
-
-
-    tabela.innerHTML = "";
-
-
-    arquivos.forEach(function(arquivo) {
-
-        const linha =
-            document.createElement("tr");
-
-
-        linha.innerHTML = `
-
-            <td>
-                ${arquivo.nome_original}
-            </td>
-
-            <td>
-                ${arquivo.tipo}
-            </td>
-
-            <td>
-                ${arquivo.data_upload}
-            </td>
-
-            <td>
-
-                <a
-                    href="/download/${arquivo.id}">
-
-                    Baixar
-
-                </a>
-
-            </td>
-
-        `;
-
-
-        tabela.appendChild(
-            linha
-        );
-
-    });
-
-}
-
-
-
-// =====================================================
-// UPLOAD
-// =====================================================
-
-document
-    .getElementById("formUpload")
-    .addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-
-            const arquivo =
-                document.getElementById(
-                    "arquivo"
-                ).files[0];
-
-
-            if (!arquivo) {
-
-                alert(
-                    "Selecione um arquivo."
-                );
-
-                return;
-
-            }
-
-
-            const formulario =
-                new FormData();
-
-
-            formulario.append(
-                "arquivo",
-                arquivo
-            );
-
-
-            const resposta =
-                await fetch(
-                    "/upload",
-                    {
-
-                        method: "POST",
-
-                        body: formulario
-
-                    }
-                );
-
-
-            const resultado =
-                await resposta.json();
-
-
-            document.getElementById(
-                "mensagem"
-            ).textContent =
-                resultado.mensagem
-                ||
-                resultado.erro;
-
-
-            carregarArquivos();
-
-        }
-    );
-
-
-
-// =====================================================
-// CARREGAR AO ABRIR A PÁGINA
-// =====================================================
-
-carregarArquivos();
-  
-</script>
-
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
-
 </html>

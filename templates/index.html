@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/paginas/dashboard.css">
   <title>Dashboard</title>
 </head>
-<body>
+<body data-pagina="presenca">
 
   <div id="sidebar"></div>
 
@@ -102,7 +102,7 @@
             <div class="lista-vencimentos">
               <!-- Item 1 -->
               <div class="item-vencimento">
-                <div class="icone-vencimento fundo-vermelho"><img src="images/red-alert.png" alt="Alerta"></div>
+                <div class="icone-vencimento fundo-vermelho"><img src="static/images/red-alert.png" alt="Alerta"></div>
                 <div class="texto-vencimento">
                   <h4>Chamada da turma de manhã</h4>
                   <p>Sem registro desde ontem</p>
@@ -158,7 +158,7 @@
       </div> 
     </main>
 
-  <script src="static/js/script.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 </html>
