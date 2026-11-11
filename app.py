@@ -1,64 +1,112 @@
-from flask import Flask, request, render_template
-from database import conectar_banco
+from flask import Flask, request, render_template, session, redirect, url_for
+import mysql.connector
 import sys
-
+ 
 ccb = Flask(__name__)
 
-# Faz "from app import ccb, conexao, cursor" (nos outros arquivos) usar ESTE módulo,
-# em vez de carregar o app.py uma segunda vez. Deve ficar antes dos imports lá embaixo.
+ccb.secret_key = "ccb_sistema_2026"
+ 
 sys.modules.setdefault("app", sys.modules[__name__])
-
-# Conexão compartilhada, usada por criar_conta.py, entrar.py e formulario.py.
-# (As credenciais ficam só no database.py.)
-conexao = conectar_banco()
-
+ 
+conexao = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="senha",
+    database="centro_cidadania_do_brasil"
+)
+ 
 cursor = conexao.cursor()
 
-
-# ---------- Páginas ----------
+def usuario_logado():
+    return "usuario_id" in session
 
 @ccb.route("/")
 def home():
-    return render_template("index.html")
+    if not usuario_logado():
+        return redirect(url_for("login_pagina"))
 
+    return render_template(
+        "index.html",
+        nome=session.get("usuario_nome"),
+        inicial=session.get("usuario_nome")[0].upper()
+        )
+ 
 @ccb.route("/login")
 def login_pagina():
     return render_template("login.html")
-
+ 
 @ccb.route("/presenca")
 def presenca_pagina():
-    # conexão própria: sempre lê os alunos atuais do banco
-    conn = conectar_banco()
-    cur = conn.cursor()
-    cur.execute("SELECT id, nome_aluno FROM inscricoes ORDER BY nome_aluno")
-    alunos = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template("presenca.html", alunos=alunos)
+    if not usuario_logado():
+        return redirect(url_for("login_pagina"))
 
+    cursor.execute(
+        "SELECT matricula, nome FROM alunos ORDER BY nome"
+    )
+
+    alunos = cursor.fetchall()
+
+    return render_template(
+        "presenca.html",
+        alunos=alunos,
+        nome=session.get("usuario_nome"),
+        inicial=session.get("usuario_nome")[0].upper()
+    )
+ 
 @ccb.route("/relatorios")
 def relatorios_pagina():
-    return render_template("relatorios.html")
+    if not usuario_logado():
+        return redirect(url_for("login_pagina"))
 
+    return render_template(
+        "relatorios.html",
+        nome=session.get("usuario_nome"),
+        inicial=session.get("usuario_nome")[0].upper()
+    )
+ 
 @ccb.route("/documentos")
 def documentos_pagina():
-    return render_template("documentos.html")
+    if not usuario_logado():
+        return redirect(url_for("login_pagina"))
 
+    return render_template(
+        "documentos.html",
+        nome=session.get("usuario_nome"),
+        inicial=session.get("usuario_nome")[0].upper()
+    )
+ 
 @ccb.route("/formulario")
 def formulario_pagina():
-    return render_template("formulario.html")
+    if not usuario_logado():
+        return redirect(url_for("login_pagina"))
 
+    return render_template(
+        "formulario.html",
+        nome=session.get("usuario_nome"),
+        inicial=session.get("usuario_nome")[0].upper()
+    )
+ 
 @ccb.route("/configuracoes")
 def configuracoes_pagina():
-    return render_template("configuracoes.html")
+    if not usuario_logado():
+        return redirect(url_for("login_pagina"))
 
+    return render_template(
+        "configuracoes.html",
+        nome=session.get("usuario_nome"),
+        inicial=session.get("usuario_nome")[0].upper()
+    )
 
-# ---------- Rotas dos outros arquivos (devem vir DEPOIS de ccb, conexao e cursor) ----------
+@ccb.route("/logout")
+def logout():
+    session.clear()
 
+    return redirect(url_for("login_pagina"))
+ 
+ 
 import criar_conta
 import entrar
 import formulario
-import arquivos_relatorios
-
+ 
 if __name__ == "__main__":
     ccb.run(debug=True)
