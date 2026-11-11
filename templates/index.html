@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/paginas/dashboard.css">
   <title>Dashboard</title>
 </head>
-<body data-pagina="presenca">
+<body data-pagina="pagina_inicial" data-nome="{{ nome }}" data-inicial="{{ inicial }}">
 
   <div id="sidebar"></div>
 
@@ -19,7 +19,7 @@
         
         <!-- Cabecalho -->
         <div class="cabecalho-dash">
-          <h1>Olá, Nome</h1>
+          <h1>Olá, {{ nome }}</h1>
           <p>Centro de Cidadania do Brasil ° Turmas de hoje</p>
         </div>
 
@@ -45,7 +45,7 @@
         <!-- Grade de 4 Metricas -->
         <div class="grid-4-cartoes">
           <!-- Cartão 1 -->
-          <a href="presenca.html" class="cartao-dash">
+          <a href="/presenca" class="cartao-dash">
             <div class="cartao-topo">
               <div class="icone-box-pequeno azul-claro"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAABHxJREFUeAHtnU1yEkEUx19T5HOVI7CxpNyEvYnCDXRhFclGPIF6AuAEiTfATaTKhd4A1GQfd1huOAK7BENo+w3EQhK633ww3TP9flWpgmSA4v9L95uP7mkAhmEYhmEYhkkdATEo139UoVB4DlJWAWRJvV0Jsklf/XQGnw4+QspEEhAEL0RTPaxCnhCiNTh72oYUCSWg9KK3t7Wz0VQvegd5RcraoHvYh5QoUDcs13slFX4v1+Ejs5adGkXKRvifL8XGFxV+BXKOTOA73nXRQsiKlGIPNDWG1ALm3U7uw0fU99yDGJTrF00Vfk89rM7DR6rqp1M+vrjXuowC0Gbuu53/6UNEZuHL1soNpGwFrWMBQgtIt090gA5EwBj+HUs1Rivg0ateRbXJKviCkO0oxwLk8OF+jdEW4UKx2ICcowrlSE7FpYpGhR9+9zNM+MHnLdUYrQAhxT75SEHK9vX15HT4tTYCTwgb/pz+4hO9gAKo3SgwojZ5/6t7eAoeETF8pLP4RFsDVPikXbLx1U0HPCJy+A/UGPKRsA7udghg+GeHreVfJyLAF5IOH2EBRNYRPsICCKwrfIQFGFhn+AgL0LDu8BEWsII0wkdYwAOkFT7CApZIM3yEBSyQdvgIC5hjI3yEBYC98BHvBdgMH/FagO3wEW8FuBA+4qUAV8JHvBPgUviIVwJcCx/xRoCL4SOksaHrJsxYymjv72b4iPUWEHYsZbT3dzN8xKqAcv17wziWMoYE18NHLLeAwmvjJhElZCF8xG4NoI47nUkA6vShtMOPU8OstgAhgD6eiNgS0g8/Xg2zKkBO4TLcC/QS0g+fUMOW5gMsY7kGyPAzEldIsNPnE2qYYc6ZVQHBbEQZX4K1gkuoYaY5Z9YPxJQEbKbhZyfOCzNMAVze2zHNOXPiVARKiNoSsrCrqcOZc0GRJYTFofARp07GrV2CY+Ejzp0NXZsEB8NHnDwdnbgER8NHnL0ekJgEh8NHnL4gE1uC4+Ejzl8RiywhA+EjmbgkGVpCRsJHMnNNmCwhQ+Ejmboob5SQsfCRzI2KmEmYvlFnufr4HO/1EDzGW41lLHzEiVERYRl0n3Ug4m1lXIOHp1uGBViGBViGBViGBViGBViGBViGBViGBViGBViGBViGBViGBViGBVgmEQG4wAN4RqmRzHc2CJBDILC9W/RpfYGAnT+b5qHpEIyO1k5C0V+QkWIIAkpg/BTRfHx0PsJbGOf9LrrY2rd3N99KSRsULEA/CcVwRUx+U29RBdoHnWzvbJyUj84h91DuaH63Kcifur+bakAfmFhMJ6Kj+7tWwGwGC0uIQf/35wNtF0TYC0phzH5eIYxjMgrAVqD6sQ/AhAIzo6zIRzoOGG9NWhJCTin1GMxqfDVpUbYlCRh2aiMhb16yBDOYEWZF3R0nHwkPurXheOumxt3RajAbdSxUw6yor4m+nC0u8ObTGmM6gj1F2Y6yCmusBZ2fHJ9Xbm9lQwixLwr/blThAeoUDZ4lCA5UoZ/m8rcMwzAMwzAMkwB/AcYxlH+oruqYAAAAAElFTkSuQmCC" alt=""></div>
               <span class="seta-canto">↗</span>
@@ -56,7 +56,7 @@
           </a>
 
           <!-- Cartão 2 -->
-          <a href="documentos.html" class="cartao-dash">
+          <a href="/documentos" class="cartao-dash">
             <div class="cartao-topo">
               <div class="icone-box-pequeno azul-claro"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAA/FJREFUeAHtnc1OE1EUx8+dlo9llwouyhvIwkSIJvgE4BMoOwQTyhOAT0BNhLhD30CfQNiAiYvyBjRowJ1dSkvnes9YjJrSaXvuzDkzc34JCYHSofc/556ve+8AKIqiKIqiKIpSNAwkyFLtrNJuT28aY5eshaq7WhXSwMKHMDRbn9/ebYJwEhHg4dpltVSyB9ZpAHy0OjZ88mX/3ikIJgDPLKx/3wxKtsE8+EhlwgSfHqx/uw+C8WoBi+uX22DsDshCtCV4EwDvfGPCOshErAheBMA5H6cd920F5CJSBC8+wJTCHZA9+IhIn0C2gN7dfwbZQZQllIGIi/FXhnhZMzTd1eny9elhfa4FHlncuLCj/cUfSxAhAlmAIIDlmBFoTk5czfseeCJiRCD7ADf4g+dUG9SEDf4NInyCDyc80Pke79/5CHJhF8F7JpxBWEUoggDDTH9sIuReAAw5QbAIuRcAoxzJIhTCB0gWoTBOWKoIhYqCJIpQuDBUmgi5FwD70v//TJIImRfANfubg37/87rcd+CkiJB9CzCDBQhs6aCfFSASRMi8AMbao5iXVNudqcbjF+d9y+bcIpAbMnH1+OO9meTXHnWmfkC6eGvqZN4CsNTt7oBDSJfIErAbCERyEQXZrlmF4aYQn1RMyR4AkVwIgEsQnRW8gpQxcc2oIchNHnCyN1N3HjltEcgrQXKViB2/md1xlrAF6U9HY5O7TBgtIeyaeQv2PWSAXJYi0Cec7M0+d0LMWRvUelGSSKsgL0uRTG9/wOve11iMse5oJLQpz4wKwIwKwIwKwIwKwIwKwIwKwIyIPOCvba1Y3CLXV2IRtI+Y3QJu9pf1trUmP/iIgRW8po96PhV2AYLA7gLP/jIv9Xwq/D7A3Y3AhI96PhUJTpizSMZhef/ALoCb+8mNbcLF2Xfv8AvA089FWi4SqgEz7AJgKBg1UFxoCOkQraLAa0oIQ0XkAb2BeAoFRDNhZlQAZlQAZlQAZlQAZlQAZlQAZrQfwIz2A5jRfgAz2g9gRvsBzGg/gBntBzCj/QBmtB/AjGbCzKgAzKgAzCQuwG0nlSi/oR9dPOZ5PVlg4eV5XJZODp/pFkA4r0cy0f8clncHvcZHEkkWgHpejzRw4B+tfV26ak81TNxjt0J6Jk0+y4fpvB4R4EZwajJHtgCm83oEYN75yKS9REGM9RwuWmHXz/E4XgTgOq+HC/ysvupI3vIApvN60sd9xuiz+no78MzCxkXNvek2yH+s1aigr/M6+EhiD/PEZ4sZMM8gB2CQgX4uifJ1okdKRkIEZhlMuGLSWnLigSi7dwmmMfZostyuC30IkaIoiqIoiqIoGeUXTTTwZH+BfWYAAAAASUVORK5CYII=" alt=""></div>
               <span class="seta-canto">↗</span>
@@ -67,7 +67,7 @@
           </a>
 
           <!-- Cartão 3 -->
-          <a href="alunos.html" class="cartao-dash">
+          <a href="/relatorios" class="cartao-dash">
             <div class="cartao-topo">
               <div class="icone-box-pequeno azul-escuro"><img src="data:image/png;base64,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" alt=""></div>
               <span class="seta-canto">↗</span>
@@ -78,7 +78,7 @@
           </a>
 
           <!-- Cartão 4 -->
-          <a href="formulario.html" class="cartao-dash">
+          <a href="/formulario" class="cartao-dash">
             <div class="cartao-topo">
               <div class="icone-box-pequeno laranja"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAABJNJREFUeAHtnUtuE0EQhqvsAbHMEcwCMKziRZDYkRMQToByAgzhsQSWCAS+ARwBTpBkBUoiOasoiAW5AVlmMZ6iy4+EvDxTPT3p7pn6JCeR7LQ9/zful6fbAIqiKIqiKIqiNA0E5Rw/Xnc7yQi+AOEiIC0Q0rdrLXzWe79/AI5RAWfYenlvETNa5+BP30OHhNny/Q+/d8EhKuA/Lg9/hnsJKmBKfvgz3EpwKmDY7yykyY2n5s+HpuQOkLlVgOs6uXj4x6/AmQQnAo4bLQ7+yqDDpI29shLk4Z88vwsJLSjJ1trdp0mKQ7jS8BlcSCfSrbEPf/L8SK31rZe3FqEEpQRsv+i+QaSB3QG4gKwPvlz4M8pLsBbAZ7759Ra8glbhuQn/5DWUkWAlgOt89B4+QAb0HYSIwic8HN9ysZdgJaCdmvC9VTtTTDDXU+xL/kUaPrVwmW9VShD3gqY9nj/gCw4DaTdJYbU3KN4Dsgn//oe9XfH/CntHYgE/n9/tt1v0ee6DCA7Mz9VkdLTbGxwUOHuqpUz4VmUIJIgFmJ7POszrcprwTfC9EIJnXIRvVVbBcYq8DeAZwnlgq1/H8Bm+T9ImFBmnyAXkHMzSxz1xz6QKXIc/QyYhf5ySQA0R9/MxA+7Uuid/nFJ6KiI07AZZxbuQkvKLjFNqJaDquR1ptVZknFIbAVXP7di0KUXGKbUQUPXcTlUNOhN9Iyye22FyH3ssYRngGlQVPhO1AJszk/80nZ71ohKACKoKn4m2CrKtFqSDqSrDZ6IUULZOlkmQly8hOgGuGkQnEkqGz0QlwO/cjrz8IkQjIIy5HXn5eUQhoMp+uBjH5QcvoOrwfcsNWkDdw2eCFdCE8JkgBTQlfCY4AU0KnwlKQNPCZ4IR0MTwmSAENDV8xruA8XWmDQ2f8f55QDulz4DQyPAZ7+8ARFzJfVBNw2fC/0QswPBdriMOfi4oyPBnS7Kmz4GEK+mIhkNzHwgJXkBo1c6kzbqofLs1a828LqhEnT+/zZKvWWvedUGVNrjyNWvRC4ilt3MZUQuIPXymcdcFQWAEPw7YftGlC++grNgCq4DDZ2q3PuAUgYfP1FdABOEz9RQQSfiMfwEurs88U14s4TP+BSC5Cyqy8BnvAtIUVkO4StkX3gU8GOwfmJnEHiF+Axsm8jYSU0Zs4TNBjAMeTBazPYYGUu9xQASoAM+oAM+oAM+oAM+oAM+oAM84F8D7R4NSGIsds8Yb8l1K2r4hvjIgFnbWbudcxUfiKRWLPePmCzB8qeO7gI+JoDV/t0jA6rcqyAg25z4AoWPeBcOdV3lnSxxw8Ntr3Yd8TOMt+ecwstjJV7xt5fQ7Av6Cco4khZuSzWQZ8TtguiXlBiinQIKv0vAZq16Qszn8umCyaI/gHVhgJWA8fUyZ1RPWEsze2Zz9jPU4YOnTr4HpEakEk8HSR5OFJaW/Q2b7+Z0+YOuN9+3sr5rxLu5ZqfAZN1/i0+922m14iwhPoBlsSLfPvwynX2M1EYGPEGlltnwH6gCP/ml820xGR4NQNidXFEVRFEVRFEVRFEVR4uIf3z9I92AzmFEAAAAASUVORK5CYII=" alt=""></div>
               <span class="seta-canto">↗</span>
