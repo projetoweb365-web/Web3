@@ -134,3 +134,36 @@
   height: 18px;
   object-fit: contain;
 }
+
+.mensagem-aviso {
+    color: #92400e;
+    background-color: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 15px 0;
+    text-align: center;
+    font-weight: 600;
+}
+
+.mensagem-erro {
+    color: #b91c1c;
+    background-color: #fee2e2;
+    border: 1px solid #ff5656;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.mensagem-sucesso {
+    color: #166534;
+    background-color: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 15px 0;
+    text-align: center;
+    font-weight: 600;
+}
