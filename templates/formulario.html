@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/css/paginas/formulario.css">
   <title>Formulário de Inscrição</title>
 </head>
-<body data-pagina="formulario">
+<body data-pagina="formulario" data-nome="{{ nome }}" data-inicial="{{ inicial }}">
 
   <div id="sidebar"></div>
 
@@ -25,43 +25,97 @@
         <div class="caixa-cinza">
           <div class="linha">
             <div class="campo flex-total">
-              Nome do aluno(a): <input type="text" class="input-linha" name="nome_aluno">
+              Nome do aluno(a):
+              <input type="text"
+                    class="input-linha"
+                    name="nome_aluno">
             </div>
+
             <div class="campo">
-              Nascimento: <input type="date" class="input-linha" style="width: 110px;">
+              Nascimento:
+              <input type="date"
+                    class="input-linha"
+                    style="width: 110px;"
+                    name="data_nascimento">
             </div>
           </div>
+
           <div class="linha">
+
             <div class="campo">
-              Sexo: 
-              <input type="radio" name="sexo" style="margin-left:8px;"> M 
-              <input type="radio" name="sexo"> F
+              Sexo:
+
+              <input type="radio"
+                    name="sexo"
+                    value="M"
+                    style="margin-left:8px;">
+              M
+
+              <input type="radio"
+                    name="sexo"
+                    value="F">
+              F
             </div>
+
             <div class="campo">
-              RG: <input type="text" class="input-linha" style="width: 120px;" name="rg">
+              RG:
+              <input type="text"
+                    class="input-linha"
+                    style="width:120px;"
+                    name="rg">
             </div>
+
             <div class="campo">
-              CPF: <input type="text" class="input-linha" style="width: 150px;" name="cpf">
+              CPF:
+              <input type="text"
+                    class="input-linha"
+                    style="width:150px;"
+                    name="cpf">
             </div>
+
             <div class="campo flex-total">
-              Endereço: <input type="text" class="input-linha">
+              Endereço:
+              <input type="text"
+                    class="input-linha"
+                    name="endereco">
             </div>
+
           </div>
+
           <div class="linha">
+
             <div class="campo flex-total">
-              Bairro: <input type="text" class="input-linha">
+              Bairro:
+              <input type="text"
+                    class="input-linha"
+                    name="bairro">
             </div>
+
             <div class="campo flex-total">
-              CEP: <input type="text" class="input-linha">
+              CEP:
+              <input type="text"
+                    class="input-linha"
+                    name="cep">
             </div>
+
           </div>
+
           <div class="linha">
+
             <div class="campo flex-total">
-              Nome da mãe: <input type="text" class="input-linha">
+              Nome da mãe:
+              <input type="text"
+                    class="input-linha"
+                    name="nome_mae">
             </div>
+
             <div class="campo flex-total">
-              Nome do pai: <input type="text" class="input-linha">
+              Nome do pai:
+              <input type="text"
+                    class="input-linha"
+                    name="nome_pai">
             </div>
+
           </div>
         </div>
 
@@ -69,29 +123,51 @@
         <div class="secao-titulo">QUESTIONÁRIO DE PRONTIDÃO PARA ATIVIDADE FÍSICA (PARQ)</div>
         <div class="caixa-cinza">
           <ul class="lista-parq">
-            <li>Algum médico já disse que você possui problema cardíaco? 
-              <input type="radio" name="q1"> Sim <input type="radio" name="q1"> Não
+            <li>
+              Algum médico já disse que você possui problema cardíaco? 
+              <input type="radio" 
+              name="problema_cardiaco"
+              value="Sim"> Sim 
+              <input type="radio" 
+              name="problema_cardiaco" 
+              value="Nao"> Não
             </li>
             <li>Você sente dores no peito durante atividade física? 
-              <input type="radio" name="q2"> Sim <input type="radio" name="q2"> Não
+              <input type="radio"
+                    name="dor_peito_atividade"
+                    value="Sim"> Sim
+
+              <input type="radio"
+                    name="dor_peito_atividade"
+                    value="Nao"> Não
             </li>
             <li>No último mês, sentiu dores no peito? 
-              <input type="radio" name="q3"> Sim <input type="radio" name="q3"> Não
+              <input type="radio"
+                    name="dor_peito_recente"
+                    value="Sim"> Sim
+              <input type="radio"
+                    name="dor_peito_recente"
+                    value="Nao"> Não
             </li>
             <li>Você apresenta tontura ou perda de consciência ? 
-              <input type="radio" name="q4"> Sim <input type="radio" name="q4"> Não
+              <input type="radio" name="tontura_ou_perda_consciencia" value="Sim"> Sim
+              <input type="radio" name="tontura_ou_perda_consciencia" value="Nao"> Não
             </li>
             <li>Problema ósseo ou articular? 
-              <input type="radio" name="q5"> Sim <input type="radio" name="q5"> Não
+              <input type="radio" name="problema_osseo_articular" value="Sim"> Sim
+              <input type="radio" name="problema_osseo_articular" value="Nao"> Não
             </li>
             <li>Usa medicação contínua? 
-              <input type="radio" name="q6"> Sim <input type="radio" name="q6"> Não
+              <input type="radio" name="medicacao_continua" value="Sim"> Sim
+              <input type="radio" name="medicacao_continua" value="Nao"> Não
             </li>
             <li>Tratamento para pressão arterial? 
-              <input type="radio" name="q7"> Sim <input type="radio" name="q7"> Não
+              <input type="radio" name="tratamento_pressao" value="Sim"> Sim
+              <input type="radio" name="tratamento_pressao" value="Nao"> Não
             </li>
             <li>Alguma outra condição de saúde? 
-              <input type="radio" name="q8"> Sim <input type="radio" name="q8"> Não
+              <input type="radio" name="outra_condicao_saude" value="Sim"> Sim
+              <input type="radio" name="outra_condicao_saude" value="Nao"> Não
             </li>
           </ul>
         </div>
@@ -101,12 +177,21 @@
         <div class="caixa-cinza grid-modalidades">
           
           <div class="coluna-esquerda bloco-modalidade">
-            <div class="label-modalidade">Jiu-Jitsu ( ) Dias:</div>
+            <div class="label-modalidade">
+              <input type="radio"
+                    name="modalidade"
+                    value="Jiu-Jitsu">
+              Jiu-Jitsu
+              Dias:
+          </div>
             
             <!--Caixa branca com o icone-->
             <div class="caixa-com-icone">
             <img src="images/calendar.png" alt="Calendário" class="icone-dentro">
-            <input type="text" class="input-sem-borda" placeholder="Selecione os dias*">
+            <input type="text" 
+            class="input-sem-borda" 
+            name="dias"
+            placeholder="Selecione os dias*">
           </div>
           
         </div>
@@ -117,7 +202,10 @@
           <!--Caixa branca com o ícone DENTRO-->
           <div class="caixa-com-icone">
             <img src="images/clock.png" alt="Relógio" class="icone-dentro">
-              <input type="text" class="input-sem-borda" placeholder="Selecione o horário*">
+              <input type="text" 
+              class="input-sem-borda" 
+              name="horario"
+              placeholder="Selecione o horário*">
           </div>
           
         </div>
@@ -126,12 +214,37 @@
         <!--MOTIVO DA INSCRICAO-->
         <div class="secao-titulo">MOTIVO DA INSCRIÇÃO</div>
         <div class="caixa-cinza radios-motivo">
-          <label><input type="radio" name="motivo"> Melhorar a saúde</label>
-          <label><input type="radio" name="motivo"> Estabelecer novas<br>relações interpessoais</label>
-          <label><input type="radio" name="motivo"> Melhorar o comportamento</label>
+          <label>
+            <input type="radio"
+                  name="motivo_inscricao"
+                  value="Melhorar a saúde">
+            Melhorar a saúde
+          </label>
+
+          <label>
+            <input type="radio"
+                  name="motivo_inscricao"
+                  value="Estabelecer novas relações interpessoais">
+            Estabelecer novas relações interpessoais
+          </label>
+
+          <label>
+            <input type="radio"
+                  name="motivo_inscricao"
+                  value="Melhorar o comportamento">
+            Melhorar o comportamento
+          </label>
+
           <label style="flex-grow: 1; max-width: 150px;">
-            <input type="radio" name="motivo"> Outros: 
-            <input type="text" class="input-linha" style="margin-left: 2px;">
+            <input type="radio"
+                  name="motivo_inscricao"
+                  value="Outro">
+            Outros:
+
+            <input type="text"
+                  name="outro_motivo"
+                  class="input-linha"
+                  style="margin-left: 2px;">
           </label>
         </div>
 
@@ -140,31 +253,64 @@
         <div class="caixa-cinza">
           <div class="linha" style="margin-bottom: 5px;">
             <div class="campo flex-total">
-              Recebe auxílio: <input type="radio" name="auxilio" style="margin-left: 5px;"> Sim <input type="radio" name="auxilio"> Não 
+              Recebe auxílio: 
+              <input type="radio"
+                name="recebe_auxilio"
+                value="Sim"> Sim 
+              <input type="radio"
+                name="recebe_auxilio"
+                value="Nao"> Não 
               <span style="margin: 0 10px;">|</span> 
-              Participa de outro projeto: <input type="radio" name="projeto" style="margin-left: 5px;"> Sim <input type="radio" name="projeto"> Não Qual?
+              Participa de outro projeto: 
+              <input type="radio"
+                name="participa_outro_projeto"
+                value="Sim"> Sim 
+              <input type="radio"
+                name="participa_outro_projeto"
+                value="Nao"> Não Qual?
             </div>
           </div> 
           
           <div class="linha">
-            <input type="text" class="input-arredondado flex-total" placeholder="Informe qual projeto*">
+            <input type="text" 
+            class="input-arredondado flex-total" 
+            name="nome_projeto"
+            placeholder="Informe qual projeto*">
           </div>
           
           <div class="linha" style="margin-top: 15px;">
             <div class="campo">
-              Número de pessoas em casa: <input type="text" class="input-arredondado" placeholder="Ex: 1, 2, 3, 4+" style="width: 160px; margin-left: 10px;">
+              Número de pessoas em casa: 
+              <input type="text" 
+              class="input-arredondado" 
+              name="numero_pessoas_casa"
+              placeholder="Ex: 1, 2, 3, 4+" 
+              style="width: 160px; margin-left: 10px;">
             </div>
           </div>
           
           <div class="linha">
             <div class="campo flex-total">
-              Contato de emergência: <input type="text" class="input-arredondado" placeholder="Nome completo*" style="margin-left: 10px; flex-grow: 1;">
+              Contato de emergência: 
+              <input type="text" 
+              class="input-arredondado" 
+              name="contato_emergencia"
+              placeholder="Nome completo*" 
+              style="margin-left: 10px; flex-grow: 1;">
             </div>
             <div class="campo">
-              Parentesco: <input type="text" class="input-arredondado" placeholder="Ex: Pai, Mãe, irmão(a)" style="margin-left: 10px; width: 180px;">
+              Parentesco: <input type="text" 
+              class="input-arredondado" 
+              name="parentesco"
+              placeholder="Ex: Pai, Mãe, irmão(a)" 
+              style="margin-left: 10px; width: 180px;">
             </div>
             <div class="campo">
-              Telefone: <input type="text" class="input-arredondado" placeholder="(xx) xxxxx-xxxx" style="margin-left: 10px; width: 140px;">
+              Telefone: <input type="text" 
+              class="input-arredondado" 
+              name="telefone_emergencia"
+              placeholder="(xx) xxxxx-xxxx" 
+              style="margin-left: 10px; width: 140px;">
             </div>
           </div>
         </div>
@@ -173,19 +319,39 @@
         <div class="secao-titulo">AUTORIZAÇÃO / DECLARAÇÃO</div>
         <div class="caixa-cinza texto-declaracao">
           <p style="margin-top: 0; line-height: 1.8;">
-            Eu, <input type="text" class="input-linha" style="width: 300px;">, portador(a) do RG 
-            nº <input type="text" class="input-linha" style="width: 150px;">, CPF: <input type="text" class="input-linha" style="width: 150px;"> de acordo com o 
+            Eu, 
+            <input type="text" 
+            class="input-linha" 
+            name="nome_responsavel"
+            style="width: 300px;">
+            , portador(a) do RG nº 
+            <input type="text" 
+            class="input-linha" 
+            name="rg_responsavel"
+            style="width: 150px;">
+            , CPF: 
+            <input type="text" 
+            class="input-linha" 
+            name="cpf_responsavel"
+            style="width: 150px;">
+            de acordo com o 
             código civil, capítulo II, artigo 20, AUTORIZO a cessão de uso da minha imagem e voz ou o aluno(a) supracitado(a) em todo e qualquer material a ser utilizado em campanhas institucionais, bem como dados biométricos ou testes físicos que sejam esses destinados a divulgação ao público e/ou apenas para uso interno desta instituição, desde que não haja desvirtuamento da sua finalidade.<br>
             Outrossim, DECLARO estar ciente da responsabilidade das informações acima citadas, especialmente as do item PARQ
           </p>
           <div class="linha" style="margin-top: 25px;">
             <div class="campo flex-total">
-              Local e data: <input type="text" class="input-linha">
+              Local e data: 
+              <input type="date" 
+              class="input-linha"
+              name="data_autorizacao">
             </div>
           </div>
           <div class="linha" style="margin-top: 15px;">
             <div class="campo flex-total">
               Assinatura do responsável: 
+              <input type="text"
+                class="input-linha"
+                name="assinatura_responsavel">
             </div>
           </div>
         </div>
