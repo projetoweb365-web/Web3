@@ -114,5 +114,17 @@ CREATE TABLE IF NOT EXISTS arquivos (
   nome_original VARCHAR(255) NOT NULL,
   nome_salvo VARCHAR(255) NOT NULL,
   tipo VARCHAR(50) NOT NULL,
-  data_upload DATETIME DEFAULT CURRENT_TIMESTAMP
+  categoria VARCHAR(100) NOT NULL DEFAULT 'Geral',
+  aluno_matricula VARCHAR(20) NULL,
+  responsavel VARCHAR(100) NOT NULL DEFAULT 'Admin',
+  data_upload DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_arquivo_aluno
+    FOREIGN KEY (aluno_matricula) REFERENCES alunos(matricula)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
 );
+
+-- Garante que as colunas novas existam caso a tabela arquivos já tenha sido criada antes
+ALTER TABLE arquivos ADD COLUMN categoria VARCHAR(100) NOT NULL DEFAULT 'Geral';
+ALTER TABLE arquivos ADD COLUMN aluno_matricula VARCHAR(20) NULL;
+ALTER TABLE arquivos ADD COLUMN responsavel VARCHAR(100) NOT NULL DEFAULT 'Admin';
