@@ -4,11 +4,11 @@
 /* SIDEBAR  */
 
 const ITENS_MENU = [
-  { id: "pagina_inicial",          href: '/',          icone: '/static/images/pagina_inicial.png',        alt: 'Home' },
-  { id: 'presenca',      href: '/presenca',      icone: '/static/images/presenca.png',   alt: 'Presença' },
-  { id: 'documentos',    href: '/documentos',    icone: '/static/images/documentos.png', alt: 'Documentos' },
-  { id: 'formulario',    href: '/formulario',    icone: '/static/images/formulario.png', alt: 'Formulário' },
-  { id: 'configuracoes', href: '/configuracoes', icone: '/static/images/config.png',     alt: 'Configurações' }
+  { id: "pagina_inicial", href: '/',              icone: '/static/images/pagina_inicial.png', alt: 'Home' },
+  { id: 'presenca',       href: '/presenca',      icone: '/static/images/presenca.png',       alt: 'Presença' },
+  { id: 'documentos',     href: '/documentos',    icone: '/static/images/documentos.png',     alt: 'Documentos' },
+  { id: 'formulario',     href: '/formulario',    icone: '/static/images/formulario.png',     alt: 'Formulário' },
+  { id: 'configuracoes',  href: '/configuracoes', icone: '/static/images/config.png',         alt: 'Configurações' }
 ];
 
 function renderizarSidebar() {
@@ -19,35 +19,16 @@ function renderizarSidebar() {
   const nomeUsuario = document.body.dataset.nome || "Usuário";
   const inicialUsuario = document.body.dataset.inicial || "U";
   const coresAvatar = {
-  A: "#EF4444",
-  B: "#F97316",
-  C: "#EAB308",
-  D: "#22C55E",
-  E: "#14B8A6",
-  F: "#06B6D4",
-  G: "#3B82F6",
-  H: "#6366F1",
-  I: "#8B5CF6",
-  J: "#A855F7",
-  K: "#D946EF",
-  L: "#EC4899",
-  M: "#2563EB",
-  N: "#0EA5E9",
-  O: "#10B981",
-  P: "#84CC16",
-  Q: "#F59E0B",
-  R: "#DC2626",
-  S: "#9333EA",
-  T: "#0891B2",
-  U: "#059669",
-  V: "#65A30D",
-  W: "#CA8A04",
-  X: "#EA580C",
-  Y: "#C026D3",
-  Z: "#7C3AED"
-};
+    A: "#EF4444", B: "#F97316", C: "#EAB308", D: "#22C55E",
+    E: "#14B8A6", F: "#06B6D4", G: "#3B82F6", H: "#6366F1",
+    I: "#8B5CF6", J: "#A855F7", K: "#D946EF", L: "#EC4899",
+    M: "#2563EB", N: "#0EA5E9", O: "#10B981", P: "#84CC16",
+    Q: "#F59E0B", R: "#DC2626", S: "#9333EA", T: "#0891B2",
+    U: "#059669", V: "#65A30D", W: "#CA8A04", X: "#EA580C",
+    Y: "#C026D3", Z: "#7C3AED"
+  };
 
-const corAvatar = coresAvatar[inicialUsuario] || "#2563EB";
+  const corAvatar = coresAvatar[inicialUsuario] || "#2563EB";
 
   const links = ITENS_MENU.map(item => `
         <li>
@@ -64,8 +45,7 @@ const corAvatar = coresAvatar[inicialUsuario] || "#2563EB";
 
       <div class="sidebar-footer">
         <div class="perfil-usuario">
-          <div class="avatar-placeholder"
-          style="background-color:${corAvatar}">${inicialUsuario}</div>
+          <div class="avatar-placeholder" style="background-color:${corAvatar}">${inicialUsuario}</div>
           <div class="info-usuario">
             <span class="nome-usuario">${nomeUsuario}</span>
             <span class="plano-usuario">Plano</span>
@@ -89,83 +69,98 @@ function alternarAba(aba) {
   const formCadastro = document.getElementById('form-cadastro');
 
   if (aba === 'criar') {
-    // Estiliza os botões do topo
     btnCriar.classList.add('ativo');
     btnEntrar.classList.remove('ativo');
-    
-    // Esconde o form de login e mostra o form de cadastro
     formLogin.style.display = 'none';
     formCadastro.style.display = 'block';
   } else {
-    // Estiliza os botões do topo
     btnEntrar.classList.add('ativo');
     btnCriar.classList.remove('ativo');
-    
-    // Esconde o form de cadastro e mostra o form de login
     formCadastro.style.display = 'none';
     formLogin.style.display = 'block';
   }
 }
 
-/* 3) FORMULARIO: botão "Enviar" Por enquanto só leva para a tela de relatorios; quando houver backend,
-   é aqui que os dados do formulário devem ser enviados. */
 
-
-
-/*4)PRESENCA: seleção de alunos, marcar presente/ausente e atualização dos cartões.
-Por enquanto só altera a tela quando houver backend, é aqui que a chamada deve ser enviada*/
+/* 4) PRESENCA: 4 Abas (Chamada, Turmas, Alunos, Histórico) */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const tbody = document.querySelector('.tabela-frequencia tbody');
-  if (!tbody) return;
- 
+  // --- Toggle Pílula das Abas ---
+  const botoesToggle = document.querySelectorAll('.toggle-presenca .toggle-btn');
+  const abasPresenca = document.querySelectorAll('.aba-presenca');
+
+  botoesToggle.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      botoesToggle.forEach((b) => b.classList.remove('ativo'));
+      abasPresenca.forEach((aba) => (aba.style.display = 'none'));
+
+      btn.classList.add('ativo');
+      const alvo = document.getElementById(btn.dataset.alvo);
+      if (alvo) alvo.style.display = 'block';
+
+      if (btn.dataset.alvo === 'aba-historico') {
+        recarregarHistorico();
+      }
+    });
+  });
+
+  // --- Referências da Chamada ---
+  const tbodyChamada = document.getElementById('tbody-chamada');
+  if (!tbodyChamada) return;
+
+  const filtroTurma = document.getElementById('filtro-turma-chamada');
+  const inputDataAula = document.getElementById('data-aula');
+  const btnSalvarChamada = document.getElementById('btn-salvar-chamada');
+  const msgChamada = document.getElementById('msg-chamada');
+
+  // Define data de hoje por padrão no input de data
+  if (inputDataAula && !inputDataAula.value) {
+    inputDataAula.value = new Date().toISOString().split('T')[0];
+  }
+
   const checkTodos = document.getElementById('check-todos');
   const textoSelecionados = document.getElementById('texto-selecionados');
   const btnPresentes = document.getElementById('btn-marcar-presentes');
   const btnAusentes = document.getElementById('btn-marcar-ausentes');
- 
+
   const elTotal = document.getElementById('valor-total');
   const elPresentes = document.getElementById('valor-presentes');
   const elAusentes = document.getElementById('valor-ausentes');
   const elTaxa = document.getElementById('valor-taxa');
- 
-  const getLinhas = () => Array.from(tbody.querySelectorAll('tr'));
+
+  const getTodasLinhas = () => Array.from(tbodyChamada.querySelectorAll('tr:not(.linha-vazia)'));
+  const getLinhasVisiveis = () => getTodasLinhas().filter((tr) => tr.style.display !== 'none');
   const getCheck = (tr) => tr.querySelector('input[type="checkbox"]');
   const getBadge = (tr) => tr.querySelector('.badge');
   const estaPresente = (tr) => getBadge(tr).classList.contains('badge-presente');
- 
+
   function definirStatus(tr, presente) {
     const badge = getBadge(tr);
     badge.classList.toggle('badge-presente', presente);
     badge.classList.toggle('badge-ausente', !presente);
     badge.textContent = presente ? 'Presente' : 'Ausente';
   }
- 
-  function atualizar() {
-    const linhas = getLinhas();
+
+  function atualizarChamada() {
+    const linhas = getLinhasVisiveis();
     const selecionadas = linhas.filter((tr) => getCheck(tr).checked);
- 
-    // destaque das linhas selecionadas
+
     linhas.forEach((tr) => {
       tr.classList.toggle('linha-selecionada', getCheck(tr).checked);
     });
- 
-    // texto da barra de ações
+
     const n = selecionadas.length;
     textoSelecionados.textContent =
       n === 0 ? 'Nenhum aluno selecionado'
       : n === 1 ? '1 aluno selecionado'
       : `${n} alunos selecionados`;
- 
-    // botões só ativos com seleção
+
     btnPresentes.disabled = n === 0;
     btnAusentes.disabled = n === 0;
- 
-    // checkbox do cabeçalho (marcado, vazio ou indeterminado)
+
     checkTodos.checked = linhas.length > 0 && n === linhas.length;
     checkTodos.indeterminate = n > 0 && n < linhas.length;
- 
-    // cartões de métricas, calculados a partir da tabela
+
     const total = linhas.length;
     const presentes = linhas.filter(estaPresente).length;
     elTotal.textContent = total;
@@ -173,37 +168,509 @@ document.addEventListener('DOMContentLoaded', () => {
     elAusentes.textContent = total - presentes;
     elTaxa.textContent = (total ? Math.round((presentes / total) * 100) : 0) + '%';
   }
- 
-  function marcarSelecionados(presente) {
-    getLinhas().forEach((tr) => {
-      const check = getCheck(tr);
-      if (check.checked) {
-        definirStatus(tr, presente);
-        check.checked = false; // limpa a seleção depois de marcar
-      }
+
+  function aplicarFiltroTurma() {
+    if (!filtroTurma) return;
+    const turmaSelecionada = filtroTurma.value;
+    getTodasLinhas().forEach((tr) => {
+      const match = turmaSelecionada === 'todas' || tr.dataset.turma === turmaSelecionada;
+      tr.style.display = match ? '' : 'none';
+      if (!match) getCheck(tr).checked = false;
     });
-    atualizar();
+    atualizarChamada();
   }
- 
-  // checkbox "selecionar todos"
+
+  if (filtroTurma) {
+    filtroTurma.addEventListener('change', aplicarFiltroTurma);
+  }
+
   checkTodos.addEventListener('change', () => {
-    getLinhas().forEach((tr) => {
+    getLinhasVisiveis().forEach((tr) => {
       getCheck(tr).checked = checkTodos.checked;
     });
-    atualizar();
+    atualizarChamada();
   });
- 
-  // clicar em qualquer ponto da linha alterna a seleção
-  tbody.addEventListener('click', (e) => {
-    const tr = e.target.closest('tr');
+
+  tbodyChamada.addEventListener('click', (e) => {
+    const tr = e.target.closest('tr:not(.linha-vazia)');
     if (!tr) return;
     const check = getCheck(tr);
     if (e.target !== check) check.checked = !check.checked;
-    atualizar();
+    atualizarChamada();
   });
- 
-  btnPresentes.addEventListener('click', () => marcarSelecionados(true));
-  btnAusentes.addEventListener('click', () => marcarSelecionados(false));
- 
-  atualizar();
+
+  btnPresentes.addEventListener('click', () => {
+    getLinhasVisiveis().forEach((tr) => {
+      const check = getCheck(tr);
+      if (check.checked) {
+        definirStatus(tr, true);
+        check.checked = false;
+      }
+    });
+    atualizarChamada();
+  });
+
+  btnAusentes.addEventListener('click', () => {
+    getLinhasVisiveis().forEach((tr) => {
+      const check = getCheck(tr);
+      if (check.checked) {
+        definirStatus(tr, false);
+        check.checked = false;
+      }
+    });
+    atualizarChamada();
+  });
+
+  // --- Salvar Chamada no Banco ---
+  if (btnSalvarChamada) {
+    btnSalvarChamada.addEventListener('click', async () => {
+      const dataAula = inputDataAula.value;
+      const linhas = getLinhasVisiveis();
+
+      if (!dataAula) {
+        msgChamada.textContent = 'Selecione a data da aula.';
+        msgChamada.className = 'msg-chamada aviso';
+        return;
+      }
+
+      if (linhas.length === 0) {
+        msgChamada.textContent = 'Não há alunos visíveis para salvar.';
+        msgChamada.className = 'msg-chamada aviso';
+        return;
+      }
+
+      const registros = linhas.map((tr) => ({
+        matricula: tr.dataset.id,
+        presente: estaPresente(tr)
+      }));
+
+      btnSalvarChamada.disabled = true;
+      const resp = await fetch('/presenca/salvar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data_aula: dataAula, registros })
+      });
+      const dados = await resp.json();
+      btnSalvarChamada.disabled = false;
+
+      msgChamada.textContent = dados.message;
+      msgChamada.className = 'msg-chamada ' + (dados.success ? 'ok' : 'erro');
+
+      if (dados.success) {
+        recarregarHistorico();
+      }
+    });
+  }
+
+  // =====================================================
+  // ABA 4: HISTÓRICO (Atualização e Filtros)
+  // =====================================================
+  const tbodyHistorico = document.getElementById('tbody-historico');
+  const filtroHistBusca = document.getElementById('filtro-historico-busca');
+  const filtroHistTurma = document.getElementById('filtro-historico-turma');
+  const filtroHistData = document.getElementById('filtro-historico-data');
+  const btnLimparHist = document.getElementById('btn-limpar-filtros-historico');
+  const contadorHistorico = document.getElementById('contador-historico');
+
+  function filtrarHistorico() {
+    if (!tbodyHistorico) return;
+    const termo = (filtroHistBusca?.value || '').trim().toLowerCase();
+    const turma = filtroHistTurma?.value || 'todas';
+    const data = filtroHistData?.value || '';
+
+    const linhas = Array.from(tbodyHistorico.querySelectorAll('tr:not(.linha-vazia)'));
+    let visiveis = 0;
+
+    linhas.forEach((tr) => {
+      const matchBusca = !termo || tr.dataset.busca.includes(termo);
+      const matchTurma = turma === 'todas' || tr.dataset.turma === turma;
+      const matchData = !data || tr.dataset.data === data;
+
+      const mostrar = matchBusca && matchTurma && matchData;
+      tr.style.display = mostrar ? '' : 'none';
+      if (mostrar) visiveis++;
+    });
+
+    if (contadorHistorico) {
+      contadorHistorico.textContent = `${visiveis} registro(s)`;
+    }
+  }
+
+  async function recarregarHistorico() {
+    if (!tbodyHistorico) return;
+    const resp = await fetch('/presenca/historico');
+    const dados = await resp.json();
+    if (!dados.success) return;
+
+    if (dados.historico.length === 0) {
+      tbodyHistorico.innerHTML = '<tr class="linha-vazia"><td colspan="5">Nenhuma chamada registrada ainda. Salve uma chamada na primeira aba para visualizar aqui.</td></tr>';
+      if (contadorHistorico) contadorHistorico.textContent = '0 registro(s)';
+      return;
+    }
+
+    tbodyHistorico.innerHTML = dados.historico.map((h) => `
+      <tr data-data="${h.data_iso}" data-turma="${h.turma_id}" data-busca="${h.matricula.toLowerCase()} ${h.aluno_nome.toLowerCase()}">
+        <td>${h.data_formatada}</td>
+        <td>${h.matricula}</td>
+        <td>${h.aluno_nome}</td>
+        <td>${h.turma_nome}</td>
+        <td>
+          <span class="badge ${h.presente ? 'badge-presente' : 'badge-ausente'}">
+            ${h.presente ? 'Presente' : 'Ausente'}
+          </span>
+        </td>
+      </tr>
+    `).join('');
+
+    filtrarHistorico();
+  }
+
+  if (filtroHistBusca) filtroHistBusca.addEventListener('input', filtrarHistorico);
+  if (filtroHistTurma) filtroHistTurma.addEventListener('change', filtrarHistorico);
+  if (filtroHistData) filtroHistData.addEventListener('change', filtrarHistorico);
+
+  if (btnLimparHist) {
+    btnLimparHist.addEventListener('click', () => {
+      if (filtroHistBusca) filtroHistBusca.value = '';
+      if (filtroHistTurma) filtroHistTurma.value = 'todas';
+      if (filtroHistData) filtroHistData.value = '';
+      filtrarHistorico();
+    });
+  }
+
+  // =====================================================
+  // ABA 2: TURMAS (Adicionar, Alterar e Remover)
+  // =====================================================
+  const formTurma = document.getElementById('form-turma');
+  const tbodyTurmas = document.getElementById('tbody-turmas');
+  const msgTurma = document.getElementById('msg-turma');
+  const tituloFormTurma = document.getElementById('titulo-form-turma');
+  const subtituloFormTurma = document.getElementById('subtitulo-form-turma');
+  const btnSubmitTurma = document.getElementById('btn-submit-turma');
+  const btnCancelarTurma = document.getElementById('btn-cancelar-edicao-turma');
+  const inputEditTurmaId = document.getElementById('edit_turma_id');
+
+  function resetarModoEdicaoTurma() {
+    formTurma.reset();
+    inputEditTurmaId.value = '';
+    tituloFormTurma.textContent = 'Adicionar Turma';
+    subtituloFormTurma.textContent = 'Preencha os dados para criar uma nova turma';
+    btnSubmitTurma.textContent = 'Adicionar Turma';
+    btnCancelarTurma.style.display = 'none';
+  }
+
+  if (btnCancelarTurma) {
+    btnCancelarTurma.addEventListener('click', () => {
+      resetarModoEdicaoTurma();
+      msgTurma.textContent = '';
+    });
+  }
+
+  if (tbodyTurmas) {
+    tbodyTurmas.addEventListener('click', async (e) => {
+      const tr = e.target.closest('tr:not(.linha-vazia)');
+      if (!tr) return;
+
+      if (e.target.classList.contains('btn-editar-turma')) {
+        inputEditTurmaId.value = tr.dataset.id;
+        document.getElementById('nome_turma').value = tr.dataset.nome;
+        document.getElementById('modalidade').value = tr.dataset.modalidade;
+        document.getElementById('dias').value = tr.dataset.dias;
+        document.getElementById('horario').value = tr.dataset.horario;
+
+        tituloFormTurma.textContent = `Alterar Turma #${tr.dataset.id}`;
+        subtituloFormTurma.textContent = 'Edite os dados e clique em Salvar Alterações';
+        btnSubmitTurma.textContent = 'Salvar Alterações';
+        btnCancelarTurma.style.display = 'inline-block';
+        msgTurma.textContent = '';
+      }
+
+      if (e.target.classList.contains('btn-remover-turma')) {
+        if (!confirm(`Deseja realmente remover a turma "${tr.dataset.nome}"?`)) return;
+
+        const formData = new FormData();
+        formData.append('id', tr.dataset.id);
+
+        const resp = await fetch('/presenca/turma/remover', {
+          method: 'POST',
+          body: formData
+        });
+        const dados = await resp.json();
+
+        msgTurma.textContent = dados.message;
+        msgTurma.className = 'msg-chamada ' + (dados.success ? 'ok' : 'erro');
+
+        if (dados.success) {
+          const idRemovido = String(dados.id);
+          tr.remove();
+
+          if (tbodyTurmas.querySelectorAll('tr').length === 0) {
+            tbodyTurmas.innerHTML = '<tr class="linha-vazia"><td colspan="6">Nenhuma turma cadastrada ainda.</td></tr>';
+          }
+
+          document.querySelectorAll(`#turma_id option[value="${idRemovido}"], #filtro-turma-chamada option[value="${idRemovido}"], #filtro-historico-turma option[value="${idRemovido}"]`)
+            .forEach(opt => opt.remove());
+
+          document.querySelectorAll(`#tbody-chamada tr[data-turma="${idRemovido}"]`).forEach(row => {
+            row.dataset.turma = '';
+            row.children[3].textContent = 'Sem turma';
+          });
+          document.querySelectorAll(`#tbody-alunos-crud tr[data-turma="${idRemovido}"]`).forEach(row => {
+            row.dataset.turma = '';
+            row.children[2].textContent = 'Sem turma';
+          });
+
+          if (inputEditTurmaId.value === idRemovido) resetarModoEdicaoTurma();
+          aplicarFiltroTurma();
+        }
+      }
+    });
+  }
+
+  if (formTurma) {
+    formTurma.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const editando = Boolean(inputEditTurmaId.value);
+      const url = editando ? '/presenca/turma/editar' : '/presenca/turma/adicionar';
+      const formData = new FormData(formTurma);
+
+      const resp = await fetch(url, { method: 'POST', body: formData });
+      const dados = await resp.json();
+
+      msgTurma.textContent = dados.message;
+      msgTurma.className = 'msg-chamada ' + (dados.success ? 'ok' : 'erro');
+
+      if (dados.success && dados.turma) {
+        const t = dados.turma;
+        const selectAluno = document.getElementById('turma_id');
+
+        if (editando) {
+          const tr = tbodyTurmas.querySelector(`tr[data-id="${t.id}"]`);
+          if (tr) {
+            tr.dataset.nome = t.nome;
+            tr.dataset.modalidade = t.modalidade;
+            tr.dataset.dias = t.dias;
+            tr.dataset.horario = t.horario;
+            tr.children[1].textContent = t.nome;
+            tr.children[2].textContent = t.modalidade;
+            tr.children[3].textContent = t.dias;
+            tr.children[4].textContent = t.horario;
+          }
+
+          if (selectAluno) {
+            const opt = selectAluno.querySelector(`option[value="${t.id}"]`);
+            if (opt) opt.textContent = `${t.nome} (${t.modalidade})`;
+          }
+          if (filtroTurma) {
+            const opt = filtroTurma.querySelector(`option[value="${t.id}"]`);
+            if (opt) opt.textContent = `${t.nome} (${t.modalidade})`;
+          }
+          if (filtroHistTurma) {
+            const opt = filtroHistTurma.querySelector(`option[value="${t.id}"]`);
+            if (opt) opt.textContent = t.nome;
+          }
+
+          document.querySelectorAll(`#tbody-chamada tr[data-turma="${t.id}"]`).forEach(row => {
+            row.children[3].textContent = t.nome;
+          });
+          document.querySelectorAll(`#tbody-alunos-crud tr[data-turma="${t.id}"]`).forEach(row => {
+            row.children[2].textContent = t.nome;
+          });
+
+          resetarModoEdicaoTurma();
+        } else {
+          const vazia = tbodyTurmas.querySelector('.linha-vazia');
+          if (vazia) vazia.remove();
+
+          tbodyTurmas.insertAdjacentHTML('beforeend', `
+            <tr data-id="${t.id}" data-nome="${t.nome}" data-modalidade="${t.modalidade}" data-dias="${t.dias}" data-horario="${t.horario}">
+              <td>${t.id}</td>
+              <td>${t.nome}</td>
+              <td>${t.modalidade}</td>
+              <td>${t.dias}</td>
+              <td>${t.horario}</td>
+              <td class="celula-acoes">
+                <button type="button" class="btn-tabela-editar btn-editar-turma">Alterar</button>
+                <button type="button" class="btn-tabela-remover btn-remover-turma">Remover</button>
+              </td>
+            </tr>
+          `);
+
+          if (selectAluno) {
+            selectAluno.insertAdjacentHTML('beforeend', `<option value="${t.id}">${t.nome} (${t.modalidade})</option>`);
+          }
+          if (filtroTurma) {
+            filtroTurma.insertAdjacentHTML('beforeend', `<option value="${t.id}">${t.nome} (${t.modalidade})</option>`);
+          }
+          if (filtroHistTurma) {
+            filtroHistTurma.insertAdjacentHTML('beforeend', `<option value="${t.id}">${t.nome}</option>`);
+          }
+          formTurma.reset();
+        }
+      }
+    });
+  }
+
+  // =====================================================
+  // ABA 3: ALUNOS (Adicionar, Alterar e Remover)
+  // =====================================================
+  const formAluno = document.getElementById('form-aluno');
+  const tbodyAlunosCrud = document.getElementById('tbody-alunos-crud');
+  const msgAluno = document.getElementById('msg-aluno');
+  const tituloFormAluno = document.getElementById('titulo-form-aluno');
+  const subtituloFormAluno = document.getElementById('subtitulo-form-aluno');
+  const btnSubmitAluno = document.getElementById('btn-submit-aluno');
+  const btnCancelarAluno = document.getElementById('btn-cancelar-edicao-aluno');
+  const inputEditMatriculaOriginal = document.getElementById('edit_matricula_original');
+
+  function resetarModoEdicaoAluno() {
+    formAluno.reset();
+    inputEditMatriculaOriginal.value = '';
+    tituloFormAluno.textContent = 'Adicionar Aluno';
+    subtituloFormAluno.textContent = 'Cadastre um aluno e associe a uma turma';
+    btnSubmitAluno.textContent = 'Adicionar Aluno';
+    btnCancelarAluno.style.display = 'none';
+  }
+
+  if (btnCancelarAluno) {
+    btnCancelarAluno.addEventListener('click', () => {
+      resetarModoEdicaoAluno();
+      msgAluno.textContent = '';
+    });
+  }
+
+  if (tbodyAlunosCrud) {
+    tbodyAlunosCrud.addEventListener('click', async (e) => {
+      const tr = e.target.closest('tr:not(.linha-vazia)');
+      if (!tr) return;
+
+      if (e.target.classList.contains('btn-editar-aluno')) {
+        inputEditMatriculaOriginal.value = tr.dataset.matricula;
+        document.getElementById('matricula').value = tr.dataset.matricula;
+        document.getElementById('nome_aluno').value = tr.dataset.nome;
+        document.getElementById('turma_id').value = tr.dataset.turma || '';
+
+        tituloFormAluno.textContent = `Alterar Aluno (${tr.dataset.matricula})`;
+        subtituloFormAluno.textContent = 'Edite os dados e clique em Salvar Alterações';
+        btnSubmitAluno.textContent = 'Salvar Alterações';
+        btnCancelarAluno.style.display = 'inline-block';
+        msgAluno.textContent = '';
+      }
+
+      if (e.target.classList.contains('btn-remover-aluno')) {
+        if (!confirm(`Deseja realmente remover o aluno "${tr.dataset.nome}"?`)) return;
+
+        const formData = new FormData();
+        formData.append('matricula', tr.dataset.matricula);
+
+        const resp = await fetch('/presenca/aluno/remover', {
+          method: 'POST',
+          body: formData
+        });
+        const dados = await resp.json();
+
+        msgAluno.textContent = dados.message;
+        msgAluno.className = 'msg-chamada ' + (dados.success ? 'ok' : 'erro');
+
+        if (dados.success) {
+          const matRemovida = dados.matricula;
+          tr.remove();
+
+          if (tbodyAlunosCrud.querySelectorAll('tr').length === 0) {
+            tbodyAlunosCrud.innerHTML = '<tr class="linha-vazia"><td colspan="4">Nenhum aluno cadastrado ainda.</td></tr>';
+          }
+
+          const trChamada = tbodyChamada.querySelector(`tr[data-id="${matRemovida}"]`);
+          if (trChamada) trChamada.remove();
+
+          if (tbodyChamada.querySelectorAll('tr').length === 0) {
+            tbodyChamada.innerHTML = '<tr class="linha-vazia"><td colspan="5">Nenhum aluno inscrito ainda.</td></tr>';
+          }
+
+          if (inputEditMatriculaOriginal.value === matRemovida) resetarModoEdicaoAluno();
+          atualizarChamada();
+          recarregarHistorico();
+        }
+      }
+    });
+  }
+
+  if (formAluno) {
+    formAluno.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const editando = Boolean(inputEditMatriculaOriginal.value);
+      const url = editando ? '/presenca/aluno/editar' : '/presenca/aluno/adicionar';
+      const formData = new FormData(formAluno);
+
+      const resp = await fetch(url, { method: 'POST', body: formData });
+      const dados = await resp.json();
+
+      msgAluno.textContent = dados.message;
+      msgAluno.className = 'msg-chamada ' + (dados.success ? 'ok' : 'erro');
+
+      if (dados.success && dados.aluno) {
+        const a = dados.aluno;
+
+        if (editando) {
+          const matAntiga = dados.matricula_original;
+
+          const trCrud = tbodyAlunosCrud.querySelector(`tr[data-matricula="${matAntiga}"]`);
+          if (trCrud) {
+            trCrud.dataset.matricula = a.matricula;
+            trCrud.dataset.nome = a.nome;
+            trCrud.dataset.turma = a.turma_id;
+            trCrud.children[0].textContent = a.matricula;
+            trCrud.children[1].textContent = a.nome;
+            trCrud.children[2].textContent = a.turma_nome;
+          }
+
+          const trChamada = tbodyChamada.querySelector(`tr[data-id="${matAntiga}"]`);
+          if (trChamada) {
+            trChamada.dataset.id = a.matricula;
+            trChamada.dataset.turma = a.turma_id;
+            trChamada.children[1].textContent = a.matricula;
+            trChamada.children[2].textContent = a.nome;
+            trChamada.children[3].textContent = a.turma_nome;
+          }
+
+          resetarModoEdicaoAluno();
+          aplicarFiltroTurma();
+          recarregarHistorico();
+        } else {
+          const vaziaCrud = tbodyAlunosCrud.querySelector('.linha-vazia');
+          if (vaziaCrud) vaziaCrud.remove();
+
+          tbodyAlunosCrud.insertAdjacentHTML('beforeend', `
+            <tr data-matricula="${a.matricula}" data-nome="${a.nome}" data-turma="${a.turma_id}">
+              <td>${a.matricula}</td>
+              <td>${a.nome}</td>
+              <td>${a.turma_nome}</td>
+              <td class="celula-acoes">
+                <button type="button" class="btn-tabela-editar btn-editar-aluno">Alterar</button>
+                <button type="button" class="btn-tabela-remover btn-remover-aluno">Remover</button>
+              </td>
+            </tr>
+          `);
+
+          const vaziaChamada = tbodyChamada.querySelector('.linha-vazia');
+          if (vaziaChamada) vaziaChamada.remove();
+
+          tbodyChamada.insertAdjacentHTML('beforeend', `
+            <tr data-id="${a.matricula}" data-turma="${a.turma_id}">
+              <td><input type="checkbox"></td>
+              <td>${a.matricula}</td>
+              <td>${a.nome}</td>
+              <td>${a.turma_nome}</td>
+              <td><span class="badge badge-presente">Presente</span></td>
+            </tr>
+          `);
+
+          formAluno.reset();
+          aplicarFiltroTurma();
+        }
+      }
+    });
+  }
+
+  atualizarChamada();
 });
