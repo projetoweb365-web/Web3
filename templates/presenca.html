@@ -9,23 +9,43 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/paginas/presenca.css') }}">
   <title>Presença (Chamada)</title>
 </head>
-<body data-pagina="presenca">
+<body data-pagina="presenca" data-nome="{{ nome }}" data-inicial="{{ inicial }}">
 
   <div id="sidebar"></div>
 
-    <!-- Area Principal -->
-    <main class="content">
+  <!-- Area Principal -->
+  <main class="content">
 
-      <div class="container-chamada">
+    <div class="container-chamada">
 
-        <!-- Cabecalho -->
-        <div class="cabecalho-chamada">
-          <h1>Chamada</h1>
-          <p>Gerencie a frequência dos alunos</p>
-        </div>
+      <!-- Cabecalho -->
+      <div class="cabecalho-chamada">
+        <h1>Chamada</h1>
+        <p>Gerencie a frequência, turmas, alunos e histórico</p>
+      </div>
 
-        <!-- Data da aula e botão de salvar -->
+      <!-- Toggle Pílula: 4 Abas -->
+      <div class="toggle-pilula toggle-presenca">
+        <button type="button" class="toggle-btn ativo" data-alvo="aba-chamada">Chamada</button>
+        <button type="button" class="toggle-btn" data-alvo="aba-turmas">Turmas</button>
+        <button type="button" class="toggle-btn" data-alvo="aba-alunos">Alunos</button>
+        <button type="button" class="toggle-btn" data-alvo="aba-historico">Histórico</button>
+      </div>
+
+      <!-- ===================================== -->
+      <!-- ABA 1: CHAMADA                        -->
+      <!-- ===================================== -->
+      <div id="aba-chamada" class="aba-presenca">
+
         <div class="barra-chamada">
+          <label for="filtro-turma-chamada">Turma:</label>
+          <select id="filtro-turma-chamada" class="select-chamada">
+            <option value="todas">Todas as turmas</option>
+            {% for t_id, t_nome, t_mod, t_dias, t_hor in turmas %}
+            <option value="{{ t_id }}">{{ t_nome }} ({{ t_mod }})</option>
+            {% endfor %}
+          </select>
+
           <label for="data-aula">Data da aula:</label>
           <input type="date" id="data-aula">
           <button type="button" id="btn-salvar-chamada" class="btn-salvar-chamada">Salvar chamada</button>
@@ -40,7 +60,7 @@
               <div class="icone-box box-azul"><img src="{{ url_for('static', filename='images/users-branco.png') }}" alt=""></div>
               <span class="card-label">TOTAL DE ALUNOS</span>
             </div>
-            <div class="card-valor" id="valor-total">45</div>
+            <div class="card-valor" id="valor-total">0</div>
           </div>
 
           <div class="card-metrica card-verde">
@@ -48,7 +68,7 @@
               <div class="icone-box box-verde"><img src="{{ url_for('static', filename='images/check-branco.png') }}" alt=""></div>
               <span class="card-label">PRESENTES</span>
             </div>
-            <div class="card-valor" id="valor-presentes">38</div>
+            <div class="card-valor" id="valor-presentes">0</div>
           </div>
 
           <div class="card-metrica card-vermelho">
@@ -56,7 +76,7 @@
               <div class="icone-box box-vermelha"><img src="{{ url_for('static', filename='images/X-branco.png') }}" alt=""></div>
               <span class="card-label">AUSENTES</span>
             </div>
-            <div class="card-valor" id="valor-ausentes">7</div>
+            <div class="card-valor" id="valor-ausentes">0</div>
           </div>
 
           <div class="card-metrica card-roxo">
@@ -64,7 +84,7 @@
               <div class="icone-box box-roxa"><span class="simbolo-percent">%</span></div>
               <span class="card-label">TAXA DE PRESENÇA</span>
             </div>
-            <div class="card-valor" id="valor-taxa">84%</div>
+            <div class="card-valor" id="valor-taxa">0%</div>
           </div>
 
         </div>
@@ -72,7 +92,6 @@
         <!-- Tabela de chamada -->
         <div class="caixa-tabela-chamada">
 
-          <!-- Barra de acoes da tabela -->
           <div class="tabela-acoes">
             <div class="selecao-info">
               <input type="checkbox" id="check-todos" title="Selecionar todos">
@@ -84,38 +103,283 @@
             </div>
           </div>
 
-          <!-- Tabela frequencia -->
           <div class="tabela-scroll">
-          <table class="tabela-frequencia">
-            <thead>
-              <tr>
-                <th style="width: 40px;"></th>
-                <th>Matrícula</th>
-                <th>NOME DO ALUNO</th>
-                <th>STATUS DE PRESENÇA</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for id, nome in alunos %}
-              <tr data-id="{{ id }}">
-                <td><input type="checkbox"></td>
-                <td>{{ id }}</td>
-                <td>{{ nome }}</td>
-                <td><span class="badge badge-presente">Presente</span></td>
-              </tr>
-              {% else %}
-              <tr class="linha-vazia">
-                <td colspan="4">Nenhum aluno inscrito ainda.</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          </div> <!-- fecha tabela-scroll -->
+            <table class="tabela-frequencia">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"></th>
+                  <th>Matrícula</th>
+                  <th>NOME DO ALUNO</th>
+                  <th>TURMA</th>
+                  <th>STATUS DE PRESENÇA</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-chamada">
+                {% for matricula, nome_aluno, turma_nome, turma_id in alunos %}
+                <tr data-id="{{ matricula }}" data-turma="{{ turma_id or '' }}">
+                  <td><input type="checkbox"></td>
+                  <td>{{ matricula }}</td>
+                  <td>{{ nome_aluno }}</td>
+                  <td>{{ turma_nome }}</td>
+                  <td><span class="badge badge-presente">Presente</span></td>
+                </tr>
+                {% else %}
+                <tr class="linha-vazia">
+                  <td colspan="5">Nenhum aluno inscrito ainda.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
 
-        </div> <!-- fecha caixa-tabela-chamada -->
+        </div>
 
-      </div> <!-- fecha container-chamada -->
-    </main>
+      </div> <!-- fecha aba-chamada -->
+
+      <!-- ===================================== -->
+      <!-- ABA 2: TURMAS                         -->
+      <!-- ===================================== -->
+      <div id="aba-turmas" class="aba-presenca" style="display: none;">
+
+        <div class="grid-gerenciamento">
+
+          <div class="caixa-tabela-chamada card-cadastro">
+            <h2 id="titulo-form-turma">Adicionar Turma</h2>
+            <p class="subtitulo-card" id="subtitulo-form-turma">Preencha os dados para criar uma nova turma</p>
+
+            <form id="form-turma" class="form-presenca">
+              <input type="hidden" id="edit_turma_id" name="id">
+
+              <div class="campo-form">
+                <label for="nome_turma">Nome da Turma</label>
+                <input type="text" id="nome_turma" name="nome_turma" placeholder="Ex: Turma Infantil A" required>
+              </div>
+
+              <div class="campo-form">
+                <label for="modalidade">Modalidade</label>
+                <select id="modalidade" name="modalidade" required>
+                  <option value="">Selecione...</option>
+                  <option value="Jiu-Jitsu">Jiu-Jitsu</option>
+                  <option value="Muay Thai">Muay Thai</option>
+                  <option value="Judô">Judô</option>
+                  <option value="Boxe">Boxe</option>
+                </select>
+              </div>
+
+              <div class="campo-duplo">
+                <div class="campo-form">
+                  <label for="dias">Dias da Semana</label>
+                  <input type="text" id="dias" name="dias" placeholder="Ex: Seg / Qua / Sex" required>
+                </div>
+                <div class="campo-form">
+                  <label for="horario">Horário</label>
+                  <input type="time" id="horario" name="horario" required>
+                </div>
+              </div>
+
+              <div class="botoes-form-crud">
+                <button type="submit" id="btn-submit-turma" class="btn-primario-presenca">Adicionar Turma</button>
+                <button type="button" id="btn-cancelar-edicao-turma" class="btn-cancelar-crud" style="display: none;">Cancelar</button>
+              </div>
+              <span id="msg-turma" class="msg-chamada"></span>
+            </form>
+          </div>
+
+          <div class="caixa-tabela-chamada">
+            <div class="tabela-acoes">
+              <span class="texto-selecionados">Turmas Cadastradas</span>
+            </div>
+            <div class="tabela-scroll" style="max-height: 420px;">
+              <table class="tabela-frequencia tabela-crud">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>TURMA</th>
+                    <th>MODALIDADE</th>
+                    <th>DIAS</th>
+                    <th>HORÁRIO</th>
+                    <th>AÇÕES</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-turmas">
+                  {% for t_id, t_nome, t_mod, t_dias, t_hor in turmas %}
+                  <tr data-id="{{ t_id }}" data-nome="{{ t_nome }}" data-modalidade="{{ t_mod }}" data-dias="{{ t_dias }}" data-horario="{{ t_hor }}">
+                    <td>{{ t_id }}</td>
+                    <td>{{ t_nome }}</td>
+                    <td>{{ t_mod }}</td>
+                    <td>{{ t_dias }}</td>
+                    <td>{{ t_hor }}</td>
+                    <td class="celula-acoes">
+                      <button type="button" class="btn-tabela-editar btn-editar-turma">Alterar</button>
+                      <button type="button" class="btn-tabela-remover btn-remover-turma">Remover</button>
+                    </td>
+                  </tr>
+                  {% else %}
+                  <tr class="linha-vazia">
+                    <td colspan="6">Nenhuma turma cadastrada ainda.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div> <!-- fecha aba-turmas -->
+
+      <!-- ===================================== -->
+      <!-- ABA 3: ALUNOS                         -->
+      <!-- ===================================== -->
+      <div id="aba-alunos" class="aba-presenca" style="display: none;">
+
+        <div class="grid-gerenciamento">
+
+          <div class="caixa-tabela-chamada card-cadastro">
+            <h2 id="titulo-form-aluno">Adicionar Aluno</h2>
+            <p class="subtitulo-card" id="subtitulo-form-aluno">Cadastre um aluno e associe a uma turma</p>
+
+            <form id="form-aluno" class="form-presenca">
+              <input type="hidden" id="edit_matricula_original" name="matricula_original">
+
+              <div class="campo-form">
+                <label for="matricula">Matrícula</label>
+                <input type="text" id="matricula" name="matricula" placeholder="Ex: 2026004" required>
+              </div>
+
+              <div class="campo-form">
+                <label for="nome_aluno">Nome Completo</label>
+                <input type="text" id="nome_aluno" name="nome_aluno" placeholder="Digite o nome do aluno" required>
+              </div>
+
+              <div class="campo-form">
+                <label for="turma_id">Turma</label>
+                <select id="turma_id" name="turma_id">
+                  <option value="">Sem turma definida</option>
+                  {% for t_id, t_nome, t_mod, t_dias, t_hor in turmas %}
+                  <option value="{{ t_id }}">{{ t_nome }} ({{ t_mod }})</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="botoes-form-crud">
+                <button type="submit" id="btn-submit-aluno" class="btn-salvar-chamada">Adicionar Aluno</button>
+                <button type="button" id="btn-cancelar-edicao-aluno" class="btn-cancelar-crud" style="display: none;">Cancelar</button>
+              </div>
+              <span id="msg-aluno" class="msg-chamada"></span>
+            </form>
+          </div>
+
+          <div class="caixa-tabela-chamada">
+            <div class="tabela-acoes">
+              <span class="texto-selecionados">Alunos Cadastrados</span>
+            </div>
+            <div class="tabela-scroll" style="max-height: 420px;">
+              <table class="tabela-frequencia tabela-crud">
+                <thead>
+                  <tr>
+                    <th>MATRÍCULA</th>
+                    <th>NOME DO ALUNO</th>
+                    <th>TURMA</th>
+                    <th>AÇÕES</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-alunos-crud">
+                  {% for matricula, nome_aluno, turma_nome, turma_id in alunos %}
+                  <tr data-matricula="{{ matricula }}" data-nome="{{ nome_aluno }}" data-turma="{{ turma_id or '' }}">
+                    <td>{{ matricula }}</td>
+                    <td>{{ nome_aluno }}</td>
+                    <td>{{ turma_nome }}</td>
+                    <td class="celula-acoes">
+                      <button type="button" class="btn-tabela-editar btn-editar-aluno">Alterar</button>
+                      <button type="button" class="btn-tabela-remover btn-remover-aluno">Remover</button>
+                    </td>
+                  </tr>
+                  {% else %}
+                  <tr class="linha-vazia">
+                    <td colspan="4">Nenhum aluno cadastrado ainda.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div> <!-- fecha aba-alunos -->
+
+      <!-- ===================================== -->
+      <!-- ABA 4: HISTÓRICO                      -->
+      <!-- ===================================== -->
+      <div id="aba-historico" class="aba-presenca" style="display: none;">
+
+        <!-- Filtros do Histórico -->
+        <div class="barra-chamada">
+          <label for="filtro-historico-busca">Aluno:</label>
+          <input type="text" id="filtro-historico-busca" class="input-busca-historico" placeholder="Buscar por nome ou matrícula...">
+
+          <label for="filtro-historico-turma">Turma:</label>
+          <select id="filtro-historico-turma" class="select-chamada">
+            <option value="todas">Todas as turmas</option>
+            {% for t_id, t_nome, t_mod, t_dias, t_hor in turmas %}
+            <option value="{{ t_id }}">{{ t_nome }}</option>
+            {% endfor %}
+          </select>
+
+          <label for="filtro-historico-data">Data:</label>
+          <input type="date" id="filtro-historico-data">
+
+          <button type="button" id="btn-limpar-filtros-historico" class="btn-cancelar-crud">Limpar filtros</button>
+        </div>
+
+        <!-- Tabela de Histórico -->
+        <div class="caixa-tabela-chamada">
+          <div class="tabela-acoes">
+            <span class="texto-selecionados">Histórico de Presenças dos Alunos</span>
+            <span id="contador-historico" class="subtitulo-card" style="margin: 0;">{{ historico|length }} registro(s)</span>
+          </div>
+
+          <div class="tabela-scroll" style="max-height: 460px;">
+            <table class="tabela-frequencia tabela-crud">
+              <thead>
+                <tr>
+                  <th>DATA DA AULA</th>
+                  <th>MATRÍCULA</th>
+                  <th>NOME DO ALUNO</th>
+                  <th>TURMA</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-historico">
+                {% for h_id, h_data_fmt, h_data_iso, h_mat, h_aluno, h_turma, h_turma_id, h_presente in historico %}
+                <tr data-data="{{ h_data_iso }}" data-turma="{{ h_turma_id }}" data-busca="{{ h_mat|lower }} {{ h_aluno|lower }}">
+                  <td>{{ h_data_fmt }}</td>
+                  <td>{{ h_mat }}</td>
+                  <td>{{ h_aluno }}</td>
+                  <td>{{ h_turma }}</td>
+                  <td>
+                    {% if h_presente %}
+                    <span class="badge badge-presente">Presente</span>
+                    {% else %}
+                    <span class="badge badge-ausente">Ausente</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% else %}
+                <tr class="linha-vazia">
+                  <td colspan="5">Nenhuma chamada registrada ainda. Salve uma chamada na primeira aba para visualizar aqui.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div> <!-- fecha aba-historico -->
+
+    </div> <!-- fecha container-chamada -->
+  </main>
 
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
