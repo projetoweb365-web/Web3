@@ -132,9 +132,34 @@ def relatorios_pagina():
 
 @ccb.route("/documentos")
 def documentos_pagina():
+    cursor.execute("""
+        SELECT matricula, nome
+        FROM alunos
+        ORDER BY nome
+    """)
+    alunos = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT
+            arq.id,
+            arq.nome_original,
+            arq.tipo,
+            arq.categoria,
+            COALESCE(al.nome, '') AS aluno_nome,
+            COALESCE(arq.aluno_matricula, '') AS aluno_matricula,
+            arq.responsavel,
+            DATE_FORMAT(arq.data_upload, '%d/%m/%Y %H:%i') AS data_fmt
+        FROM arquivos arq
+        LEFT JOIN alunos al ON arq.aluno_matricula = al.matricula
+        ORDER BY arq.data_upload DESC
+    """)
+    documentos = cursor.fetchall()
+
     nome, inicial = dados_usuario_atual()
     return render_template(
         "documentos.html",
+        alunos=alunos,
+        documentos=documentos,
         nome=nome,
         inicial=inicial
     )
@@ -170,6 +195,7 @@ import criar_conta
 import entrar
 import formulario
 import presenca
+import documentos
 
 if __name__ == "__main__":
     ccb.run(debug=True)
