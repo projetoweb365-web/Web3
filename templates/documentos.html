@@ -3,157 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="static/css/base.css">
-  <link rel="stylesheet" href="static/css/layout.css">
-  <link rel="stylesheet" href="static/css/componentes.css">
-  <link rel="stylesheet" href="static/css/paginas/documentos.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/componentes.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/paginas/documentos.css') }}">
   <title>Documentos</title>
 </head>
-<body data-pagina="documentos">
+<body data-pagina="documentos" data-nome="{{ nome }}" data-inicial="{{ inicial }}">
 
   <div id="sidebar"></div>
 
-    <!-- Area Principal -->
-    <main class="content">
-      
-      <div class="container-documentos">
-        <!-- Alternador Relatorios / Documentos -->
-        <nav class="toggle-pilula compacto">
-          <a href="relatorios.html" class="toggle-btn">Relatórios</a>
-          <a href="documentos.html" class="toggle-btn ativo">Documentos</a>
-        </nav>
+  <!-- Area Principal -->
+  <main class="content">
+    
+    <div class="container-documentos">
+      <!-- Alternador Relatorios / Documentos -->
+      <nav class="toggle-pilula compacto">
+        <a href="/relatorios" class="toggle-btn">Relatórios</a>
+        <a href="/documentos" class="toggle-btn ativo">Documentos</a>
+      </nav>
 
+      <!-- Cabecalho da Página -->
+      <div class="cabecalho-documentos">
+        <h1>Documentos</h1>
+        <p>Upload, visualização e gerenciamento de documentos.</p>
+      </div>
+
+      <!-- Upload de arquivos -->
+      <div class="caixa-documentos">
+        <h2 class="titulo-caixa-centro">UPLOAD DE ARQUIVOS</h2>
+
+        <!-- Toggle Pílula de Categoria -->
+        <div class="bloco-categoria-upload">
+          <label class="label-categoria-upload">Selecione a categoria do documento:</label>
+          <div class="toggle-pilula toggle-categoria-doc" id="toggle-categoria-doc">
+            <button type="button" class="toggle-btn ativo" data-categoria="Aluno">Aluno</button>
+            <button type="button" class="toggle-btn" data-categoria="Financeiro">Financeiro</button>
+            <button type="button" class="toggle-btn" data-categoria="Frequência">Frequência</button>
+            <button type="button" class="toggle-btn" data-categoria="Jurídico">Jurídico</button>
+            <button type="button" class="toggle-btn" data-categoria="Geral">Geral</button>
+          </div>
+        </div>
         
-        <!-- Cabecalho da Página -->
-        <div class="cabecalho-documentos">
-          <h1>Documentos</h1>
-          <p>Upload, visualização e gerenciamento de documentos.</p>
-        </div>
+        <form id="form-upload-documento" enctype="multipart/form-data" class="area-upload">
+          <input type="hidden" id="input-categoria-doc" name="categoria" value="Aluno">
 
-        <!--Upload de arquivos -->
-        <div class="caixa-documentos">
-          <h2 class="titulo-caixa-centro">UPLOAD DE ARQUIVOS</h2>
-          
-          <form action="/upload" method="POST" enctype="multipart/form-data" class="area-upload">
-            <img src="static/images/upload-icon.png" alt="Upload" class="icone-upload">
-            <p>Selecione o ficheiro para envio:</p>
-            
-            <input type="file" name="arquivo" required style="margin-top: 10px;">
-            <button type="submit" style="margin-top: 15px; padding: 8px 16px; border-radius: 8px; cursor: pointer;">Fazer Upload</button>
-          </form>
-          
-          <p class="formatos-texto">Formatos: .pdf, .docx, .xlsx, .jpg (Máx.: 25Mb).</p>
-        </div>
-
-        <!--Tabela de Documentos -->
-        <div class="caixa-documentos">
-          <h2 class="titulo-caixa-esquerda">TABELA DE DOCUMENTOS SALVOS</h2>
-          
-          <div class="tabela-wrapper">
-            <table class="tabela-documentos">
-              <thead>
-                <tr>
-                  <th style="text-align: left;"><img src="static/images/file-black.png" alt="Ficheiro" class="icone-ficheiro"> Nome do Arquivo</th>
-                  <th>Categoria</th>
-                  <th>Tipo</th>
-                  <th>Responsável</th>
-                  <th>Data de Upload</th>
-                  <th>Última atualização</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="text-align: left; font-weight: bold;">Relatório Semanal</td>
-                  <td>Financeiro</td>
-                  <td>PDF</td>
-                  <td>Anderson Freire</td>
-                  <td>14/09/2026</td>
-                  <td>20/09/2026</td>
-                  <td>
-                    <div class="acoes-tabela">
-                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
-                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
-                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
-                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: left; font-weight: bold;">Presença Setembro 2...</td>
-                  <td>Frequencia</td>
-                  <td>Excel</td>
-                  <td>Gabriel Mansur</td>
-                  <td>01/09/2026</td>
-                  <td>18/09/2026</td>
-                  <td>
-                    <div class="acoes-tabela">
-                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
-                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
-                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
-                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: left; font-weight: bold;">Declaração Escolar</td>
-                  <td>Documento es...</td>
-                  <td>PDF</td>
-                  <td>Julliany Souza</td>
-                  <td>02/04/2024</td>
-                  <td>15/07/2026</td>
-                  <td>
-                    <div class="acoes-tabela">
-                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
-                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
-                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
-                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: left; font-weight: bold;">Termo de Parceria</td>
-                  <td>Jurídico</td>
-                  <td>Docx</td>
-                  <td>Pedro Nascime...</td>
-                  <td>16/11/2025</td>
-                  <td>28/04/2026</td>
-                  <td>
-                    <div class="acoes-tabela">
-                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
-                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
-                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
-                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: left; font-weight: bold;">RG Ana Costa</td>
-                  <td>Documento pe...</td>
-                  <td>PDF</td>
-                  <td>Eduarda Blossom</td>
-                  <td>20/03/2022</td>
-                  <td>12/01/2023</td>
-                  <td>
-                    <div class="acoes-tabela">
-                      <img src="static/images/eye-icon.png" alt="Ver" class="icone-acao">
-                      <img src="static/images/edit-icon.png" alt="Editar" class="icone-acao">
-                      <img src="static/images/download-icon.png" alt="Baixar" class="icone-acao">
-                      <img src="static/images/trash-icon.png" alt="Apagar" class="icone-acao">
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Campo condicional: aparece apenas quando categoria == "Aluno" -->
+          <div id="campo-selecionar-aluno" class="campo-aluno-doc">
+            <label for="select-aluno-doc">Vincular ao Aluno (obrigatório):</label>
+            <select id="select-aluno-doc" name="aluno_matricula" required>
+              <option value="">Selecione o aluno...</option>
+              {% for matricula, nome_aluno in alunos %}
+              <option value="{{ matricula }}">{{ nome_aluno }} ({{ matricula }})</option>
+              {% endfor %}
+            </select>
           </div>
 
+          <img src="{{ url_for('static', filename='images/upload-icon.png') }}" alt="Upload" class="icone-upload">
+          <p>Selecione o ficheiro para envio:</p>
+          
+          <input type="file" id="input-arquivo-doc" name="arquivo" accept=".pdf,.docx,.xlsx,.xls,.jpg,.jpeg,.png" required>
+          <button type="submit" id="btn-enviar-doc" class="btn-upload-doc">Fazer Upload</button>
+          <span id="msg-upload-doc" class="msg-upload-doc"></span>
+        </form>
+        
+        <p class="formatos-texto">Formatos: .pdf, .docx, .xlsx, .jpg, .png (Máx.: 25Mb).</p>
+      </div>
+
+      <!-- Tabela de Documentos -->
+      <div class="caixa-documentos">
+        <div class="cabecalho-tabela-docs">
+          <h2 class="titulo-caixa-esquerda" style="margin: 0;">DOCUMENTOS SALVOS</h2>
+
+          <div class="filtro-docs-wrapper">
+            <label for="filtro-categoria-tabela">Filtrar categoria:</label>
+            <select id="filtro-categoria-tabela" class="select-filtro-doc">
+              <option value="todas">Todas</option>
+              <option value="Aluno">Aluno</option>
+              <option value="Financeiro">Financeiro</option>
+              <option value="Frequência">Frequência</option>
+              <option value="Jurídico">Jurídico</option>
+              <option value="Geral">Geral</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="tabela-wrapper">
+          <table class="tabela-documentos">
+            <thead>
+              <tr>
+                <th style="text-align: left;"><img src="{{ url_for('static', filename='images/file-black.png') }}" alt="Ficheiro" class="icone-ficheiro"> Nome do Arquivo</th>
+                <th>Categoria</th>
+                <th>Aluno Vinculado</th>
+                <th>Tipo</th>
+                <th>Responsável</th>
+                <th>Data de Upload</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-documentos">
+              {% for doc_id, nome_orig, tipo, cat, aluno_nome, aluno_mat, resp, data_fmt in documentos %}
+              <tr data-id="{{ doc_id }}" data-categoria="{{ cat }}">
+                <td style="text-align: left; font-weight: bold;">{{ nome_orig }}</td>
+                <td><span class="badge-categoria">{{ cat }}</span></td>
+                <td>
+                  {% if aluno_nome %}
+                    {{ aluno_nome }} ({{ aluno_mat }})
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td>{{ tipo }}</td>
+                <td>{{ resp }}</td>
+                <td>{{ data_fmt }}</td>
+                <td>
+                  <div class="acoes-tabela">
+                    <a href="/documentos/ver/{{ doc_id }}" target="_blank" title="Visualizar">
+                      <img src="{{ url_for('static', filename='images/eye-icon.png') }}" alt="Ver" class="icone-acao">
+                    </a>
+                    <a href="/documentos/baixar/{{ doc_id }}" title="Baixar">
+                      <img src="{{ url_for('static', filename='images/download-icon.png') }}" alt="Baixar" class="icone-acao">
+                    </a>
+                    <button type="button" class="btn-icone-remover" data-id="{{ doc_id }}" title="Remover">
+                      <img src="{{ url_for('static', filename='images/trash-icon.png') }}" alt="Apagar" class="icone-acao">
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+              <tr class="linha-vazia-docs">
+                <td colspan="7" style="padding: 25px; color: #666;">Nenhum documento salvo ainda.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
 
       </div>
 
-    </main>
+    </div>
 
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}?v=2"></script>
 
 </body>
 </html>
