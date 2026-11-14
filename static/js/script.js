@@ -1,7 +1,7 @@
-/*Seções: 1) Sidebar  2) Login  3) Formulário 4) Presenca */
+/*Seções: 1) Sidebar  2) Login  3) Formulário  4) Presenca  5) Documentos */
 
 
-/* SIDEBAR  */
+/* 1) SIDEBAR */
 
 const ITENS_MENU = [
   { id: "pagina_inicial", href: '/',              icone: '/static/images/pagina_inicial.png', alt: 'Home' },
@@ -61,7 +61,9 @@ function renderizarSidebar() {
 
 renderizarSidebar();
 
-/* LOGIN: alterna entre o formulário de "Entrar" e "Criar Conta" */
+
+/* 2) LOGIN: alterna entre o formulário de "Entrar" e "Criar Conta" */
+
 function alternarAba(aba) {
   const btnEntrar = document.getElementById('btn-tab-entrar');
   const btnCriar = document.getElementById('btn-tab-criar');
@@ -673,4 +675,141 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   atualizarChamada();
+});
+
+
+/* 5) DOCUMENTOS: Toggle de Categoria, Upload e Gerenciamento */
+
+document.addEventListener('DOMContentLoaded', () => {
+  const formUpload = document.getElementById('form-upload-documento');
+  if (!formUpload) return;
+
+  const toggleCategoria = document.getElementById('toggle-categoria-doc');
+  const inputCategoria = document.getElementById('input-categoria-doc');
+  const campoAluno = document.getElementById('campo-selecionar-aluno');
+  const selectAluno = document.getElementById('select-aluno-doc');
+  const btnEnviar = document.getElementById('btn-enviar-doc');
+  const msgUpload = document.getElementById('msg-upload-doc');
+  const tbodyDocs = document.getElementById('tbody-documentos');
+  const filtroCategoriaTabela = document.getElementById('filtro-categoria-tabela');
+
+  // Alternar categoria via toggle-pílula
+  if (toggleCategoria) {
+    const botoesCat = toggleCategoria.querySelectorAll('.toggle-btn');
+    botoesCat.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        botoesCat.forEach((b) => b.classList.remove('ativo'));
+        btn.classList.add('ativo');
+
+        const categoria = btn.dataset.categoria;
+        inputCategoria.value = categoria;
+
+        if (categoria === 'Aluno') {
+          campoAluno.style.display = 'flex';
+          selectAluno.required = true;
+        } else {
+          campoAluno.style.display = 'none';
+          selectAluno.required = false;
+          selectAluno.value = '';
+        }
+      });
+    });
+  }
+
+  // Envio do arquivo via fetch
+  formUpload.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (inputCategoria.value === 'Aluno' && !selectAluno.value) {
+      msgUpload.textContent = 'Selecione o aluno antes de enviar.';
+      msgUpload.className = 'msg-upload-doc erro';
+      return;
+    }
+
+    const formData = new FormData(formUpload);
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = 'Enviando...';
+
+    try {
+      const resp = await fetch('/documentos/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const dados = await resp.json();
+
+      msgUpload.textContent = dados.message;
+      msgUpload.className = 'msg-upload-doc ' + (dados.success ? 'ok' : 'erro');
+
+      if (dados.success && dados.documento) {
+        const d = dados.documento;
+        const vazia = tbodyDocs.querySelector('.linha-vazia-docs');
+        if (vazia) vazia.remove();
+
+        const textoAluno = d.aluno_nome ? `${d.aluno_nome} (${d.aluno_matricula})` : '—';
+
+        tbodyDocs.insertAdjacentHTML('afterbegin', `
+          <tr data-id="${d.id}" data-categoria="${d.categoria}">
+            <td style="text-align: left; font-weight: bold;">${d.nome_original}</td>
+            <td><span class="badge-categoria">${d.categoria}</span></td>
+            <td>${textoAluno}</td>
+            <td>${d.tipo}</td>
+            <td>${d.responsavel}</td>
+            <td>${d.data_upload}</td>
+            <td>
+              <div class="acoes-tabela">
+                <a href="/documentos/ver/${d.id}" target="_blank" title="Visualizar">
+                  <img src="/static/images/eye-icon.png" alt="Ver" class="icone-acao">
+                </a>
+                <a href="/documentos/baixar/${d.id}" title="Baixar">
+                  <img src="/static/images/download-icon.png" alt="Baixar" class="icone-acao">
+                </a>
+                <button type="button" class="btn-icone-remover" data-id="${d.id}" title="Remover">
+                  <img src="/static/images/trash-icon.png" alt="Apagar" class="icone-acao">
+                </button>
+              </div>
+            </td>
+          </tr>
+        `);
+
+        document.getElementById('input-arquivo-doc').value = '';
+        if (filtroCategoriaTabela) filtroCategoriaTabela.dispatchEvent(new Event('change'));
+      }
+    } finally {
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Fazer Upload';
+    }
+  });
+
+  // Filtrar tabela por categoria
+  if (filtroCategoriaTabela) {
+    filtroCategoriaTabela.addEventListener('change', () => {
+      const cat = filtroCategoriaTabela.value;
+      tbodyDocs.querySelectorAll('tr:not(.linha-vazia-docs)').forEach((tr) => {
+        tr.style.display = (cat === 'todas' || tr.dataset.categoria === cat) ? '' : 'none';
+      });
+    });
+  }
+
+  // Remover documento
+  tbodyDocs.addEventListener('click', async (e) => {
+    const btnRemover = e.target.closest('.btn-icone-remover');
+    if (!btnRemover) return;
+
+    const docId = btnRemover.dataset.id;
+    if (!confirm('Deseja realmente remover este documento?')) return;
+
+    const resp = await fetch(`/documentos/remover/${docId}`, { method: 'POST' });
+    const dados = await resp.json();
+
+    if (dados.success) {
+      const tr = tbodyDocs.querySelector(`tr[data-id="${docId}"]`);
+      if (tr) tr.remove();
+
+      if (tbodyDocs.querySelectorAll('tr').length === 0) {
+        tbodyDocs.innerHTML = '<tr class="linha-vazia-docs"><td colspan="7" style="padding: 25px; color: #666;">Nenhum documento salvo ainda.</td></tr>';
+      }
+    } else {
+      alert(dados.message);
+    }
+  });
 });
