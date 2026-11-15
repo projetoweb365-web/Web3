@@ -1,25 +1,18 @@
 from flask import Flask, render_template, request, jsonify
 
-from database import conectar_banco
-
 from datetime import date, timedelta
 
+from app import cbb, conexao
 
-app = Flask(__name__)
-
-
-
-@app.route("/")
+@cbb.route("/")
 def pagina_relatorio():
 
     return render_template("relatorio.html")
 
 
 
-@app.route("/inscricoes")
+@cbb.route("/inscricoes")
 def listar_inscricoes():
-
-    conexao = conectar_banco()
 
     cursor = conexao.cursor(dictionary=True)
 
@@ -46,34 +39,26 @@ def listar_inscricoes():
     inscricoes = cursor.fetchall()
 
     cursor.close()
-    conexao.close()
 
     return jsonify(inscricoes)
 
 
-@app.route("/modalidades")
+@cbb.route("/modalidades")
 def listar_modalidades():
 
-    conexao = conectar_banco()
-
-    cursor = conexao.cursor()
+    cursor = conexao.cursor(dictionary=True)
 
     cursor.execute("""
         SELECT DISTINCT modalidade
-
         FROM inscricoes
-
         WHERE modalidade IS NOT NULL
-
         AND modalidade != ''
-
         ORDER BY modalidade
     """)
 
     modalidades = cursor.fetchall()
 
     cursor.close()
-    conexao.close()
 
     resultado = []
 
@@ -85,9 +70,7 @@ def listar_modalidades():
 
     return jsonify(resultado)
 
-
-
-@app.route("/frequencia", methods=["POST"])
+@cbb.route("/frequencia", methods=["POST"])
 def registrar_frequencia():
 
     dados = request.get_json()
@@ -97,9 +80,6 @@ def registrar_frequencia():
     data_aula = dados["data_aula"]
 
     presente = dados["presente"]
-
-
-    conexao = conectar_banco()
 
     cursor = conexao.cursor()
 
@@ -130,10 +110,7 @@ def registrar_frequencia():
 
     conexao.commit()
 
-
     cursor.close()
-    conexao.close()
-
 
     return jsonify({
         "mensagem":
@@ -141,7 +118,7 @@ def registrar_frequencia():
     })
 
 
-@app.route("/relatorio/frequencia")
+@cbb.route("/relatorio/frequencia")
 def gerar_relatorio():
 
     periodo = request.args.get(
@@ -198,16 +175,13 @@ def gerar_relatorio():
 
         data_fim = hoje
 
-
     elif periodo == "anual":
 
         data_inicio = hoje.replace(
             month=1,
             day=1
         )
-
         data_fim = hoje
-
 
     elif periodo == "personalizado":
 
@@ -219,23 +193,15 @@ def gerar_relatorio():
             "data_fim"
         )
 
-
     else:
-
         return jsonify({
             "erro":
                 "Período inválido"
         }), 400
 
-
-
-    conexao = conectar_banco()
-
     cursor = conexao.cursor(
         dictionary=True
     )
-
-
 
     sql = """
 
@@ -297,19 +263,14 @@ def gerar_relatorio():
 
         AND frequencias.data_aula
             BETWEEN %s AND %s
-
-
+            
         WHERE 1 = 1
-
     """
-
 
     parametros = [
         data_inicio,
         data_fim
     ]
-
-
 
     if (
         modalidade
@@ -318,51 +279,30 @@ def gerar_relatorio():
     ):
 
         sql += """
-
             AND inscricoes.modalidade = %s
-
         """
-
         parametros.append(
             modalidade
         )
 
-
-
     sql += """
-
         GROUP BY
-
             inscricoes.id,
-
             inscricoes.nome_aluno,
-
             inscricoes.modalidade,
-
             inscricoes.dias,
-
             inscricoes.horario
-
-
-        ORDER BY
+            ORDER BY
             inscricoes.nome_aluno
-
     """
-
-
 
     cursor.execute(
         sql,
         parametros
     )
 
-
     alunos = cursor.fetchall()
-
-
     resultado = []
-
-
 
     for aluno in alunos:
 
@@ -370,16 +310,13 @@ def gerar_relatorio():
             aluno["total_aulas"]
         )
 
-
         presencas = (
             aluno["presencas"]
         )
 
-
         faltas = (
             aluno["faltas"]
         )
-
 
         if total_aulas > 0:
 
@@ -387,85 +324,52 @@ def gerar_relatorio():
                 presencas /
                 total_aulas
             ) * 100
-
         else:
-
             percentual = 0
-
 
         percentual = round(
             percentual,
             2
         )
 
-
-
         if (
-
             percentual >=
             frequencia_minima
-
             and
-
             percentual <=
             frequencia_maxima
-
         ):
-
             resultado.append({
-
                 "id":
                     aluno["id"],
-
                 "nome":
                     aluno["nome_aluno"],
-
                 "modalidade":
                     aluno["modalidade"],
-
                 "dias":
                     aluno["dias"],
-
                 "horario":
                     aluno["horario"],
-
                 "total_aulas":
                     total_aulas,
-
                 "presencas":
                     presencas,
-
                 "faltas":
                     faltas,
-
                 "frequencia":
                     percentual
-
             })
-
-
     cursor.close()
-
     conexao.close()
 
-
-    return jsonify({
-
-        "data_inicio":
-            str(data_inicio),
-
-        "data_fim":
-            str(data_fim),
-
-        "alunos":
-            resultado
-
-    })
-
-
+    return render_template(
+        "relatorio.html",
+        data_inicio=str(data_inicio),
+        data_fim=str(data_fim),
+        alunos=resultado
+    )
 
 if __name__ == "__main__":
-
-    app.run(
+    cbb.run(
         debug=True
     )
