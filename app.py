@@ -60,13 +60,154 @@ def dados_usuario_atual():
     return nome, nome[0].upper()
 
 
+def _um_valor(sql, padrao=0):
+    """Executa uma consulta e devolve o primeiro valor da primeira linha."""
+    cursor.execute(sql)
+    linha = cursor.fetchone()
+    return linha[0] if linha and linha[0] is not None else padrao
+
+
+def _plural(n, singular, plural):
+    return f"{n} {singular if n == 1 else plural}"
+
+
+def resumo_dashboard():
+    """Calcula, a partir do banco, tudo o que o dashboard mostra."""
+
+    # ---- Alunos e turmas (página Presença)
+    total_alunos = int(_um_valor("SELECT COUNT(*) FROM alunos"))
+    total_turmas = int(_um_valor("SELECT COUNT(*) FROM turmas"))
+    alunos_sem_turma = int(_um_valor("SELECT COUNT(*) FROM alunos WHERE turma_id IS NULL"))
+
+    # ---- Chamada de hoje
+    cursor.execute("""
+        SELECT COALESCE(SUM(presente = 1), 0), COALESCE(SUM(presente = 0), 0)
+        FROM chamadas_alunos
+        WHERE data_aula = CURDATE()
+    """)
+    presentes_hoje, ausentes_hoje = (int(v) for v in cursor.fetchone())
+    registros_hoje = presentes_hoje + ausentes_hoje
+    presenca_pct = round(presentes_hoje * 100 / registros_hoje) if registros_hoje else None
+
+    # ---- Presença acumulada no mês
+    cursor.execute("""
+        SELECT COALESCE(SUM(presente = 1), 0), COUNT(*)
+        FROM chamadas_alunos
+        WHERE YEAR(data_aula) = YEAR(CURDATE()) AND MONTH(data_aula) = MONTH(CURDATE())
+    """)
+    presentes_mes, registros_mes = (int(v) for v in cursor.fetchone())
+    presenca_mes_pct = round(presentes_mes * 100 / registros_mes) if registros_mes else None
+
+    # ---- Turmas com alunos que ainda não tiveram chamada hoje
+    cursor.execute("""
+        SELECT t.id, t.nome, t.horario
+        FROM turmas t
+        WHERE EXISTS (SELECT 1 FROM alunos a WHERE a.turma_id = t.id)
+          AND NOT EXISTS (
+              SELECT 1
+              FROM chamadas_alunos c
+              INNER JOIN alunos a ON a.matricula = c.aluno_matricula
+              WHERE a.turma_id = t.id AND c.data_aula = CURDATE()
+          )
+        ORDER BY t.horario, t.nome
+    """)
+    turmas_sem_chamada = cursor.fetchall()
+
+    # ---- Documentos (página Documentos)
+    total_docs = int(_um_valor("SELECT COUNT(*) FROM arquivos"))
+    alunos_sem_doc = int(_um_valor("""
+        SELECT COUNT(*)
+        FROM alunos a
+        WHERE NOT EXISTS (SELECT 1 FROM arquivos f WHERE f.aluno_matricula = a.matricula)
+    """))
+    alunos_com_doc = total_alunos - alunos_sem_doc
+    pct_docs = round(alunos_com_doc * 100 / total_alunos) if total_alunos else 0
+
+    cursor.execute("""
+        SELECT nome_original, categoria, DATE_FORMAT(data_upload, '%d/%m/%Y %H:%i')
+        FROM arquivos
+        ORDER BY data_upload DESC, id DESC
+        LIMIT 2
+    """)
+    docs_recentes = cursor.fetchall()
+
+    # ---- Inscrições (página Formulário)
+    try:
+        total_inscricoes = int(_um_valor("SELECT COUNT(*) FROM inscricoes"))
+        ultima_inscricao = _um_valor("SELECT nome_aluno FROM inscricoes ORDER BY id DESC LIMIT 1", None)
+    except mysql.connector.Error:
+        total_inscricoes, ultima_inscricao = 0, None
+
+    # ---- Lista "Pendências e atividade recente"
+    pendencias = []
+    for _id, nome_turma, horario in turmas_sem_chamada[:3]:
+        pendencias.append({
+            "tipo": "vermelho",
+            "titulo": f"Chamada: {nome_turma}",
+            "texto": f"Sem chamada registrada hoje (turma das {horario})",
+            "link": "/presenca"
+        })
+    if alunos_sem_doc:
+        pendencias.append({
+            "tipo": "laranja",
+            "titulo": "Documentos de alunos pendentes",
+            "texto": f"{_plural(alunos_sem_doc, 'aluno', 'alunos')} sem nenhum documento enviado",
+            "link": "/documentos"
+        })
+    for nome_arq, categoria, data_fmt in docs_recentes:
+        pendencias.append({
+            "tipo": "azul",
+            "titulo": nome_arq,
+            "texto": f"{categoria} · enviado em {data_fmt}",
+            "link": "/documentos"
+        })
+
+    # ---- Banner de atenção
+    partes = []
+    if turmas_sem_chamada:
+        partes.append(f"{_plural(len(turmas_sem_chamada), 'turma', 'turmas')} sem chamada registrada hoje")
+    if alunos_sem_doc:
+        partes.append(f"{_plural(alunos_sem_doc, 'aluno', 'alunos')} sem documentos enviados")
+
+    if total_alunos == 0:
+        banner_titulo = "Comece por aqui"
+        banner_texto = "Nenhum aluno cadastrado ainda. Cadastre turmas e alunos na página de Presença."
+    elif partes:
+        banner_titulo = "Atenção necessária"
+        banner_texto = "Pendências: " + " e ".join(partes) + "."
+    else:
+        banner_titulo = "Tudo em dia"
+        banner_texto = "Todas as turmas têm chamada hoje e todos os alunos têm documentos enviados."
+
+    return {
+        "banner_titulo": banner_titulo,
+        "banner_texto": banner_texto,
+        "presenca_pct": presenca_pct,
+        "chamada_hoje": registros_hoje > 0,
+        "presentes_hoje": presentes_hoje,
+        "ausentes_hoje": ausentes_hoje,
+        "presenca_mes_pct": presenca_mes_pct,
+        "total_docs": total_docs,
+        "alunos_sem_doc": alunos_sem_doc,
+        "alunos_com_doc": alunos_com_doc,
+        "pct_docs": pct_docs,
+        "total_alunos": total_alunos,
+        "total_turmas": total_turmas,
+        "alunos_sem_turma": alunos_sem_turma,
+        "total_inscricoes": total_inscricoes,
+        "ultima_inscricao": ultima_inscricao,
+        "pendencias": pendencias,
+    }
+
+
 @ccb.route("/")
 def home():
     nome, inicial = dados_usuario_atual()
     return render_template(
         "index.html",
         nome=nome,
-        inicial=inicial
+        inicial=inicial,
+        **resumo_dashboard()
     )
 
 
