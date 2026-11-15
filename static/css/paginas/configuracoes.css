@@ -5,6 +5,7 @@
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
   color: #000;
+  transition: color 0.3s;
 }
 
 /* Cabeçalho */
@@ -28,10 +29,11 @@
 
 .cartao-config {
   background-color: #ffffff;
-  border: 1px solid #777; /* Borda cinzenta escura */
+  border: 1px solid #777;
   border-radius: 12px;
   padding: 30px;
   box-sizing: border-box;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .titulo-cartao {
@@ -42,11 +44,13 @@
   font-weight: bold;
   margin-bottom: 25px;
 }
+
 .titulo-cartao img {
   width: 20px;
   height: 20px;
   object-fit: contain;
 }
+
 .form-group-config {
   margin-bottom: 20px;
 }
@@ -56,16 +60,18 @@
   font-size: 0.95rem;
   margin-bottom: 8px;
 }
+
 .input-desativado {
   width: 100%;
-  background-color: #cbd5e1; /* Cinzento azulado claro */
-  border: 1px solid #94a3b8; /* Borda cinzenta */
+  background-color: #cbd5e1;
+  border: 1px solid #94a3b8;
   border-radius: 6px;
   padding: 10px;
   box-sizing: border-box;
   outline: none;
   cursor: not-allowed;
 }
+
 .funcao-info {
   display: flex;
   align-items: center;
@@ -74,7 +80,7 @@
 }
 
 .badge-verde {
-  background-color: #00e600; /* Verde néon/vivo */
+  background-color: #00e600;
   color: #000;
   font-size: 0.8rem;
   font-weight: bold;
@@ -87,6 +93,7 @@
   font-size: 0.9rem;
   font-weight: bold;
 }
+
 .btn-salvar-perfil {
   background-color: #00e600;
   color: #000;
@@ -101,13 +108,16 @@
   gap: 8px;
   margin-top: 25px;
 }
+
 .btn-salvar-perfil img {
   width: 16px;
   height: 16px;
 }
+
 .btn-salvar-perfil:hover {
   background-color: #00cc00;
 }
+
 .desc-apar {
   font-size: 1.05rem;
   margin-bottom: 20px;
@@ -133,6 +143,7 @@
   gap: 8px;
   transition: all 0.2s;
 }
+
 .btn-tema img {
   width: 16px;
   height: 16px;
@@ -155,4 +166,65 @@
   line-height: 1.6;
   color: #000;
   margin: 0;
+}
+
+/* =====================================================
+   MODO NOTURNO (DARK MODE)
+   ===================================================== */
+
+body.dark-mode {
+  background-color: #0b0f19;
+  color: #f1f5f9;
+}
+
+body.dark-mode .sidebar,
+body.dark-mode aside {
+  background-color: #070a12;
+}
+
+body.dark-mode .container-configuracoes {
+  color: #f1f5f9;
+}
+
+body.dark-mode .cabecalho-config p {
+  color: #94a3b8;
+}
+
+body.dark-mode .cartao-config {
+  background-color: #111827;
+  border-color: #1f2937;
+}
+
+body.dark-mode .form-group-config label {
+  color: #cbd5e1;
+}
+
+body.dark-mode .input-desativado {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #94a3b8;
+}
+
+body.dark-mode .funcao-desc {
+  color: #f1f5f9;
+}
+
+body.dark-mode .desc-apar {
+  color: #f1f5f9;
+}
+
+body.dark-mode .btn-tema {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #cbd5e1;
+}
+
+body.dark-mode .btn-tema.ativo {
+  background-color: #0ea5e9;
+  color: #ffffff;
+  border-color: #0ea5e9;
+}
+
+body.dark-mode .niveis-acesso p {
+  color: #94a3b8;
 }
