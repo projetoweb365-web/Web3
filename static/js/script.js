@@ -948,3 +948,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') cancelarEdicao(tr);
   });
 });
+
+function alternarModoNoturno() {
+    document.body.classList.toggle('dark-mode');
+    
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('tema', 'escuro');
+    } else {
+        localStorage.setItem('tema', 'claro');
+    }
+}
