@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Inscrição</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/paginas/formulario2.css') }}">
+</head>
+
+<body data-pagina="formulario2"
+data-nome="{{ nome }}" 
+data-inicial="{{ inicial }}">
+
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+        <h1 class="titulo-relatorio">
+            Formulário de Inscrição do Aluno
+        </h1>
+
+        <div class="relatorio-container">
+
+            <h2>Relatório enviado</h2>
+
+            <p class="subtitulo">
+                Consulte as informações da inscrição realizada.
+            </p>
+
+            <div class="caixa-relatorio">
+
+                <div class="info-linha">
+                    <strong>Aluno:</strong> {{ nome_aluno }}
+                </div>
+
+                <div class="info-linha">
+                    <strong>Modalidade:</strong> {{ modalidade }}
+                </div>
+
+                <div class="info-linha">
+                    <strong>Responsável:</strong> {{ nome_responsavel }}
+                </div>
+
+                <div class="info-linha">
+                    <strong>Data:</strong> {{ data_autorizacao }}
+                </div>
+
+                <div class="info-linha">
+                    <strong>Status:</strong>
+                    <span class="status-sucesso">
+                        Inscrição enviada com sucesso
+                    </span>
+                </div>
+
+                <br>
+
+                <strong>Resumo:</strong>
+
+                <ul class="lista-resumo">
+                    <li>CPF: {{ cpf }}</li>
+                    <li>RG: {{ rg }}</li>
+                    <li>Dias: {{ dias }}</li>
+                    <li>Horário: {{ horario }}</li>
+                    <li>Contato Emergencial: {{ contato_emergencia }}</li>
+                </ul>
+
+            </div>
+
+            <div class="acoes">
+
+                <button 
+                class="btn btn-pdf"
+                onclick="window.location.href='/gerar_pdf'">
+                    Baixar PDF
+                </button>
+
+                <button 
+                    class="btn btn-excel"
+                    onclick="window.location.href='/exportar_excel'">
+                    Exportar Excel
+                </button>
+
+                <button
+                    class="btn btn-voltar"
+                    onclick="window.location.href='/'">
+                    Voltar
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
