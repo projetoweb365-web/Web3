@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-/* 5) DOCUMENTOS: Toggle de Categoria, Upload e Gerenciamento */
+/* 5) DOCUMENTOS: Toggle de Categoria, Upload e Edição na própria linha da tabela */
 
 document.addEventListener('DOMContentLoaded', () => {
   const formUpload = document.getElementById('form-upload-documento');
@@ -693,30 +693,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const tbodyDocs = document.getElementById('tbody-documentos');
   const filtroCategoriaTabela = document.getElementById('filtro-categoria-tabela');
 
-  // Alternar categoria via toggle-pílula
+  const CATEGORIAS = ['Aluno', 'Financeiro', 'Frequência', 'Jurídico', 'Geral'];
+  const TIPOS = ['PDF', 'DOCX', 'XLSX', 'XLS', 'JPG', 'JPEG', 'PNG'];
+
+  // Escapa texto antes de colocar em HTML/atributos
+  function esc(valor) {
+    return String(valor ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function linhaDocumento(d) {
+    const textoAluno = d.aluno_nome ? `${esc(d.aluno_nome)} (${esc(d.aluno_matricula)})` : '—';
+    return `
+      <tr data-id="${d.id}" data-categoria="${esc(d.categoria)}" data-aluno="${esc(d.aluno_matricula)}">
+        <td style="text-align: left; font-weight: bold;">${esc(d.nome_original)}</td>
+        <td><span class="badge-categoria">${esc(d.categoria)}</span></td>
+        <td>${textoAluno}</td>
+        <td>${esc(d.tipo)}</td>
+        <td>${esc(d.responsavel)}</td>
+        <td>${esc(d.data_upload)}</td>
+        <td>
+          <div class="acoes-tabela">
+            <a href="/documentos/ver/${d.id}" target="_blank" title="Visualizar">
+              <img src="/static/images/eye-icon.png" alt="Ver" class="icone-acao">
+            </a>
+            <button type="button" class="btn-icone-editar" data-id="${d.id}" title="Editar">
+              <img src="/static/images/edit-icon.png" alt="Editar" class="icone-acao">
+            </button>
+            <a href="/documentos/baixar/${d.id}" title="Baixar">
+              <img src="/static/images/download-icon.png" alt="Baixar" class="icone-acao">
+            </a>
+            <button type="button" class="btn-icone-remover" data-id="${d.id}" title="Remover">
+              <img src="/static/images/trash-icon.png" alt="Apagar" class="icone-acao">
+            </button>
+          </div>
+        </td>
+      </tr>`;
+  }
+
+  /* ---------- Formulário de upload (categoria + envio) ---------- */
+
+  function definirCategoria(categoria) {
+    inputCategoria.value = categoria;
+    toggleCategoria.querySelectorAll('.toggle-btn').forEach((b) => {
+      b.classList.toggle('ativo', b.dataset.categoria === categoria);
+    });
+    if (categoria === 'Aluno') {
+      campoAluno.style.display = 'flex';
+      selectAluno.required = true;
+    } else {
+      campoAluno.style.display = 'none';
+      selectAluno.required = false;
+      selectAluno.value = '';
+    }
+  }
+
   if (toggleCategoria) {
-    const botoesCat = toggleCategoria.querySelectorAll('.toggle-btn');
-    botoesCat.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        botoesCat.forEach((b) => b.classList.remove('ativo'));
-        btn.classList.add('ativo');
-
-        const categoria = btn.dataset.categoria;
-        inputCategoria.value = categoria;
-
-        if (categoria === 'Aluno') {
-          campoAluno.style.display = 'flex';
-          selectAluno.required = true;
-        } else {
-          campoAluno.style.display = 'none';
-          selectAluno.required = false;
-          selectAluno.value = '';
-        }
-      });
+    toggleCategoria.querySelectorAll('.toggle-btn').forEach((btn) => {
+      btn.addEventListener('click', () => definirCategoria(btn.dataset.categoria));
     });
   }
 
-  // Envio do arquivo via fetch
   formUpload.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -731,46 +769,17 @@ document.addEventListener('DOMContentLoaded', () => {
     btnEnviar.textContent = 'Enviando...';
 
     try {
-      const resp = await fetch('/documentos/upload', {
-        method: 'POST',
-        body: formData
-      });
+      const resp = await fetch('/documentos/upload', { method: 'POST', body: formData });
       const dados = await resp.json();
 
       msgUpload.textContent = dados.message;
       msgUpload.className = 'msg-upload-doc ' + (dados.success ? 'ok' : 'erro');
 
       if (dados.success && dados.documento) {
-        const d = dados.documento;
         const vazia = tbodyDocs.querySelector('.linha-vazia-docs');
         if (vazia) vazia.remove();
 
-        const textoAluno = d.aluno_nome ? `${d.aluno_nome} (${d.aluno_matricula})` : '—';
-
-        tbodyDocs.insertAdjacentHTML('afterbegin', `
-          <tr data-id="${d.id}" data-categoria="${d.categoria}">
-            <td style="text-align: left; font-weight: bold;">${d.nome_original}</td>
-            <td><span class="badge-categoria">${d.categoria}</span></td>
-            <td>${textoAluno}</td>
-            <td>${d.tipo}</td>
-            <td>${d.responsavel}</td>
-            <td>${d.data_upload}</td>
-            <td>
-              <div class="acoes-tabela">
-                <a href="/documentos/ver/${d.id}" target="_blank" title="Visualizar">
-                  <img src="/static/images/eye-icon.png" alt="Ver" class="icone-acao">
-                </a>
-                <a href="/documentos/baixar/${d.id}" title="Baixar">
-                  <img src="/static/images/download-icon.png" alt="Baixar" class="icone-acao">
-                </a>
-                <button type="button" class="btn-icone-remover" data-id="${d.id}" title="Remover">
-                  <img src="/static/images/trash-icon.png" alt="Apagar" class="icone-acao">
-                </button>
-              </div>
-            </td>
-          </tr>
-        `);
-
+        tbodyDocs.insertAdjacentHTML('afterbegin', linhaDocumento(dados.documento));
         document.getElementById('input-arquivo-doc').value = '';
         if (filtroCategoriaTabela) filtroCategoriaTabela.dispatchEvent(new Event('change'));
       }
@@ -780,7 +789,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Filtrar tabela por categoria
+  /* ---------- Filtro da tabela ---------- */
+
   if (filtroCategoriaTabela) {
     filtroCategoriaTabela.addEventListener('change', () => {
       const cat = filtroCategoriaTabela.value;
@@ -790,8 +800,125 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Remover documento
+  /* ---------- Edição na própria linha ---------- */
+
+  const originais = new Map(); // tr -> innerHTML original (para Cancelar)
+
+  // "15/11/2026 14:30" -> "2026-11-15T14:30" (formato do input datetime-local)
+  function dataParaInput(texto) {
+    const m = texto.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}` : '';
+  }
+
+  function opcoes(lista, atual) {
+    return lista.map((o) => `<option value="${esc(o)}"${o === atual ? ' selected' : ''}>${esc(o)}</option>`).join('');
+  }
+
+  function cancelarEdicao(tr) {
+    if (!originais.has(tr)) return;
+    tr.innerHTML = originais.get(tr);
+    tr.classList.remove('editando');
+    originais.delete(tr);
+  }
+
+  function entrarEdicao(tr) {
+    // só uma linha em edição por vez
+    tbodyDocs.querySelectorAll('tr.editando').forEach(cancelarEdicao);
+
+    const c = tr.children;
+    const nome = c[0].textContent.trim();
+    const categoria = tr.dataset.categoria;
+    const matricula = tr.dataset.aluno || '';
+    const tipo = c[3].textContent.trim();
+    const responsavel = c[4].textContent.trim();
+    const dataInput = dataParaInput(c[5].textContent);
+
+    originais.set(tr, tr.innerHTML);
+    tr.classList.add('editando');
+
+    c[0].innerHTML = `<input type="text" class="input-edicao-doc" data-campo="nome_original" maxlength="255" value="${esc(nome)}">`;
+    c[1].innerHTML = `<select class="input-edicao-doc" data-campo="categoria">${opcoes(CATEGORIAS, categoria)}</select>`;
+    c[2].innerHTML = `<select class="input-edicao-doc" data-campo="aluno_matricula">${selectAluno.innerHTML}</select>`;
+    c[3].innerHTML = `<select class="input-edicao-doc" data-campo="tipo">${opcoes(TIPOS, tipo)}</select>`;
+    c[4].innerHTML = `<input type="text" class="input-edicao-doc" data-campo="responsavel" maxlength="100" value="${esc(responsavel)}">`;
+    c[5].innerHTML = `<input type="datetime-local" class="input-edicao-doc" data-campo="data_upload" value="${dataInput}">`;
+    c[6].innerHTML = `
+      <div class="acoes-tabela">
+        <button type="button" class="btn-salvar-linha">Salvar</button>
+        <button type="button" class="btn-cancelar-linha">Cancelar</button>
+      </div>`;
+
+    const selAluno = c[2].querySelector('select');
+    const selCat = c[1].querySelector('select');
+    selAluno.value = matricula;
+    selAluno.disabled = categoria !== 'Aluno';
+
+    // Aluno só faz sentido na categoria "Aluno"
+    selCat.addEventListener('change', () => {
+      const ehAluno = selCat.value === 'Aluno';
+      selAluno.disabled = !ehAluno;
+      if (!ehAluno) selAluno.value = '';
+    });
+
+    c[0].querySelector('input').focus();
+  }
+
+  async function salvarEdicao(tr) {
+    const campo = (nome) => tr.querySelector(`[data-campo="${nome}"]`);
+    const payload = {
+      nome_original: campo('nome_original').value.trim(),
+      categoria: campo('categoria').value,
+      aluno_matricula: campo('aluno_matricula').value,
+      tipo: campo('tipo').value,
+      responsavel: campo('responsavel').value.trim(),
+      data_upload: campo('data_upload').value
+    };
+
+    if (!payload.nome_original) return alert('Informe o nome do arquivo.');
+    if (!payload.responsavel) return alert('Informe o responsável.');
+    if (!payload.data_upload) return alert('Informe a data de upload.');
+    if (payload.categoria === 'Aluno' && !payload.aluno_matricula) {
+      return alert('Selecione o aluno para a categoria Aluno.');
+    }
+
+    const btnSalvar = tr.querySelector('.btn-salvar-linha');
+    btnSalvar.disabled = true;
+    btnSalvar.textContent = 'Salvando...';
+
+    try {
+      const resp = await fetch(`/documentos/editar/${tr.dataset.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const dados = await resp.json();
+
+      if (dados.success && dados.documento) {
+        originais.delete(tr);
+        tr.outerHTML = linhaDocumento(dados.documento);
+        if (filtroCategoriaTabela) filtroCategoriaTabela.dispatchEvent(new Event('change'));
+      } else {
+        alert(dados.message || 'Não foi possível salvar.');
+        btnSalvar.disabled = false;
+        btnSalvar.textContent = 'Salvar';
+      }
+    } catch (err) {
+      alert('Erro de conexão ao salvar.');
+      btnSalvar.disabled = false;
+      btnSalvar.textContent = 'Salvar';
+    }
+  }
+
+  /* ---------- Cliques na tabela (editar, salvar, cancelar, remover) ---------- */
+
   tbodyDocs.addEventListener('click', async (e) => {
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+
+    if (e.target.closest('.btn-icone-editar')) return entrarEdicao(tr);
+    if (e.target.closest('.btn-salvar-linha')) return salvarEdicao(tr);
+    if (e.target.closest('.btn-cancelar-linha')) return cancelarEdicao(tr);
+
     const btnRemover = e.target.closest('.btn-icone-remover');
     if (!btnRemover) return;
 
@@ -802,8 +929,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dados = await resp.json();
 
     if (dados.success) {
-      const tr = tbodyDocs.querySelector(`tr[data-id="${docId}"]`);
-      if (tr) tr.remove();
+      originais.delete(tr);
+      tr.remove();
 
       if (tbodyDocs.querySelectorAll('tr').length === 0) {
         tbodyDocs.innerHTML = '<tr class="linha-vazia-docs"><td colspan="7" style="padding: 25px; color: #666;">Nenhum documento salvo ainda.</td></tr>';
@@ -811,5 +938,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       alert(dados.message);
     }
+  });
+
+  // Enter salva, Esc cancela
+  tbodyDocs.addEventListener('keydown', (e) => {
+    const tr = e.target.closest('tr.editando');
+    if (!tr) return;
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); salvarEdicao(tr); }
+    if (e.key === 'Escape') cancelarEdicao(tr);
   });
 });
