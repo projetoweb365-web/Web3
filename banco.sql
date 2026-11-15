@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- 5. Tabela de inscrições
 CREATE TABLE IF NOT EXISTS inscricoes (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT NOT NULL,
+  usuario_id INT NULL,
   nome_aluno VARCHAR(100) NOT NULL,
   data_nascimento DATE NOT NULL,
   sexo VARCHAR(20) NOT NULL,
@@ -128,3 +128,6 @@ CREATE TABLE IF NOT EXISTS arquivos (
 ALTER TABLE arquivos ADD COLUMN categoria VARCHAR(100) NOT NULL DEFAULT 'Geral';
 ALTER TABLE arquivos ADD COLUMN aluno_matricula VARCHAR(20) NULL;
 ALTER TABLE arquivos ADD COLUMN responsavel VARCHAR(100) NOT NULL DEFAULT 'Admin';
+
+-- Bancos já criados: permite inscrição sem usuário vinculado (o login ainda não guarda sessão)
+ALTER TABLE inscricoes MODIFY COLUMN usuario_id INT NULL;
