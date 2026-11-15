@@ -178,31 +178,38 @@
           
           <div class="coluna-esquerda bloco-modalidade">
             <div class="label-modalidade">
-              <input type="radio"
-                    name="modalidade"
-                    value="Jiu-Jitsu">
-              Jiu-Jitsu
-              Dias:
-          </div>
+                Modalidade:
+            </div>
+
+            <select name="modalidade" class="input-arredondado">
+                <option value="">Selecione uma modalidade</option>
+                <option value="Jiu-Jitsu">Jiu-Jitsu</option>
+                <option value="Muay Thai">Muay Thai</option>
+                <option value="Ballet">Ballet</option>
+            </select>
+
+            <div class="label-modalidade" style="margin-top: 15px;">
+                Dias:
+            </div>
             
             <!--Caixa branca com o icone-->
             <div class="caixa-com-icone">
-            <img src="images/calendar.png" alt="Calendário" class="icone-dentro">
-            <input type="text" 
-            class="input-sem-borda" 
-            name="dias"
-            placeholder="Selecione os dias*">
+              <img src="static/images/calendar.png" alt="Calendário" class="icone-dentro">
+              <input type="text" 
+              class="input-sem-borda" 
+              name="dias"
+              placeholder="Ex: Segunda e Quarta">
+            </div>
+            
           </div>
-          
-        </div>
         
-        <div class="coluna-direita bloco-modalidade">
+          <div class="coluna-direita bloco-modalidade">   
           <div class="label-modalidade">Horário:</div>
           
           <!--Caixa branca com o ícone DENTRO-->
           <div class="caixa-com-icone">
-            <img src="images/clock.png" alt="Relógio" class="icone-dentro">
-              <input type="text" 
+            <img src="static/images/clock.png" alt="Relógio" class="icone-dentro">
+              <input type="time" 
               class="input-sem-borda" 
               name="horario"
               placeholder="Selecione o horário*">
@@ -355,6 +362,12 @@
             </div>
           </div>
         </div>
+
+        {% if erro %}
+        <div class="mensagem-erro">
+            {{ erro }}
+        </div>
+        {% endif %}
         
         <!--Botao Enviar-->
         <button type="submit" class="btn-enviar">Enviar →</button>
