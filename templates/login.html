@@ -27,6 +27,12 @@
         <button id="btn-tab-criar" class="toggle-btn" onclick="alternarAba('criar')">Criar Conta</button>
       </div>
 
+      {% if sucesso %}
+      <div class="mensagem-sucesso">
+          {{ sucesso }}
+      </div>
+      {% endif %}
+
       <!-- FORMULÁRIO 1: LOGIN -->
       <form id="form-login" action="/login" method="POST">
         <div class="form-group">
@@ -38,6 +44,12 @@
           <label for="senha_login">Senha</label>
           <input type="password" id="senha_login" name="senha" required>
         </div>
+
+        {% if erro %}
+        <div class="mensagem-erro">
+            {{ erro }}
+        </div>
+        {% endif %}
 
         <button type="submit" class="btn-verde">Entrar</button>
       </form>
@@ -58,6 +70,12 @@
           <label for="senha_cad">Senha</label>
           <input type="password" id="senha_cad" name="senha" required>
         </div>
+
+        {% if sucesso %}
+        <div class="mensagem-sucesso">
+            {{ sucesso }}
+        </div>
+        {% endif %}
 
         <button type="submit" class="btn-verde">Criar Conta</button>
       </form>
