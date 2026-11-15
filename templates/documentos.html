@@ -103,7 +103,7 @@
             </thead>
             <tbody id="tbody-documentos">
               {% for doc_id, nome_orig, tipo, cat, aluno_nome, aluno_mat, resp, data_fmt in documentos %}
-              <tr data-id="{{ doc_id }}" data-categoria="{{ cat }}">
+              <tr data-id="{{ doc_id }}" data-categoria="{{ cat }}" data-aluno="{{ aluno_mat or '' }}">
                 <td style="text-align: left; font-weight: bold;">{{ nome_orig }}</td>
                 <td><span class="badge-categoria">{{ cat }}</span></td>
                 <td>
@@ -121,6 +121,9 @@
                     <a href="/documentos/ver/{{ doc_id }}" target="_blank" title="Visualizar">
                       <img src="{{ url_for('static', filename='images/eye-icon.png') }}" alt="Ver" class="icone-acao">
                     </a>
+                    <button type="button" class="btn-icone-editar" data-id="{{ doc_id }}" title="Editar">
+                      <img src="{{ url_for('static', filename='images/edit-icon.png') }}" alt="Editar" class="icone-acao">
+                    </button>
                     <a href="/documentos/baixar/{{ doc_id }}" title="Baixar">
                       <img src="{{ url_for('static', filename='images/download-icon.png') }}" alt="Baixar" class="icone-acao">
                     </a>
@@ -145,7 +148,7 @@
 
   </main>
 
-  <script src="{{ url_for('static', filename='js/script.js') }}?v=2"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}?v=3"></script>
 
 </body>
 </html>
