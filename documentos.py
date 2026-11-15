@@ -3,6 +3,7 @@ from flask import request, session, jsonify, send_from_directory
 import mysql.connector
 import os
 import uuid
+from datetime import datetime
 
 # =====================================================
 # CONFIGURAÇÃO DA PASTA DE UPLOADS E EXTENSÕES
@@ -211,3 +212,105 @@ def remover_documento(doc_id):
     cursor.execute("DELETE FROM arquivos WHERE id = %s", (doc_id,))
     conexao.commit()
     return {"success": True, "message": "Documento removido com sucesso!"}
+
+
+# =====================================================
+# EDITAR DOCUMENTO (todos os campos da linha da tabela)
+# =====================================================
+
+CATEGORIAS_PERMITIDAS = {"Aluno", "Financeiro", "Frequência", "Jurídico", "Geral"}
+TIPOS_PERMITIDOS = {ext.upper() for ext in EXTENSOES_PERMITIDAS}
+
+
+def buscar_documento(doc_id):
+    cursor.execute(
+        """
+        SELECT
+            arq.id, arq.nome_original, arq.tipo, arq.categoria,
+            COALESCE(al.nome, '') AS aluno_nome,
+            COALESCE(arq.aluno_matricula, '') AS aluno_matricula,
+            arq.responsavel,
+            DATE_FORMAT(arq.data_upload, '%d/%m/%Y %H:%i') AS data_fmt
+        FROM arquivos arq
+        LEFT JOIN alunos al ON arq.aluno_matricula = al.matricula
+        WHERE arq.id = %s
+        """,
+        (doc_id,)
+    )
+    r = cursor.fetchone()
+    if not r:
+        return None
+    return {
+        "id": r[0],
+        "nome_original": r[1],
+        "tipo": r[2],
+        "categoria": r[3],
+        "aluno_nome": r[4],
+        "aluno_matricula": r[5],
+        "responsavel": r[6],
+        "data_upload": r[7]
+    }
+
+
+def _parse_data_upload(texto):
+    for formato in ("%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M:%S"):
+        try:
+            return datetime.strptime(texto, formato)
+        except (ValueError, TypeError):
+            continue
+    return None
+
+
+@ccb.route("/documentos/editar/<int:doc_id>", methods=["POST"])
+def editar_documento(doc_id):
+    cursor.execute("SELECT id FROM arquivos WHERE id = %s", (doc_id,))
+    if not cursor.fetchone():
+        return {"success": False, "message": "Arquivo não encontrado."}
+
+    dados = request.get_json(silent=True) or {}
+
+    nome_original = (dados.get("nome_original") or "").strip()
+    categoria = (dados.get("categoria") or "").strip()
+    aluno_matricula = (dados.get("aluno_matricula") or "").strip() or None
+    tipo = (dados.get("tipo") or "").strip().upper()
+    responsavel = (dados.get("responsavel") or "").strip()
+    data_upload = _parse_data_upload((dados.get("data_upload") or "").strip())
+
+    if not nome_original or len(nome_original) > 255:
+        return {"success": False, "message": "Nome do arquivo inválido (1 a 255 caracteres)."}
+    if categoria not in CATEGORIAS_PERMITIDAS:
+        return {"success": False, "message": "Categoria inválida."}
+    if tipo not in TIPOS_PERMITIDOS:
+        return {"success": False, "message": "Tipo inválido."}
+    if not responsavel or len(responsavel) > 100:
+        return {"success": False, "message": "Responsável inválido (1 a 100 caracteres)."}
+    if data_upload is None:
+        return {"success": False, "message": "Data de upload inválida."}
+
+    if categoria == "Aluno":
+        if not aluno_matricula:
+            return {"success": False, "message": "Selecione o aluno para a categoria Aluno."}
+        cursor.execute("SELECT 1 FROM alunos WHERE matricula = %s", (aluno_matricula,))
+        if not cursor.fetchone():
+            return {"success": False, "message": "Aluno não encontrado."}
+    else:
+        aluno_matricula = None
+
+    try:
+        cursor.execute(
+            """
+            UPDATE arquivos
+            SET nome_original=%s, categoria=%s, aluno_matricula=%s,
+                tipo=%s, responsavel=%s, data_upload=%s
+            WHERE id=%s
+            """,
+            (nome_original, categoria, aluno_matricula, tipo, responsavel, data_upload, doc_id)
+        )
+        conexao.commit()
+        return {
+            "success": True,
+            "message": "Documento atualizado com sucesso!",
+            "documento": buscar_documento(doc_id)
+        }
+    except Exception as err:
+        return {"success": False, "message": f"Erro ao atualizar: {str(err)}"}
