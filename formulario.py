@@ -1,7 +1,8 @@
 from app import ccb, conexao, cursor
-from flask import request
+from flask import request, session
+import mysql.connector
+import re
 
-@ccb.route("/formulario", methods=["POST"])
 @ccb.route("/formulario", methods=["POST"])
 def formulario():
 
@@ -36,6 +37,8 @@ def formulario():
     participa_outro_projeto = request.form.get("participa_outro_projeto")
     nome_projeto = request.form.get("nome_projeto")
     numero_pessoas_casa = request.form.get("numero_pessoas_casa")
+    achou_numero = re.search(r"\d+", numero_pessoas_casa or "")
+    numero_pessoas_casa = int(achou_numero.group()) if achou_numero else None
     contato_emergencia = request.form.get("contato_emergencia")
     parentesco = request.form.get("parentesco")
     telefone_emergencia = request.form.get("telefone_emergencia")
@@ -83,87 +86,96 @@ def formulario():
             "message": "Preencha todos os dados da autorização."
         }
 
-    cursor.execute(
-        """
-        INSERT INTO inscricoes (
-            nome_aluno,
-            data_nascimento,
-            sexo,
-            rg,
-            cpf,
-            endereco,
-            bairro,
-            cep,
-            nome_mae,
-            nome_pai,
-            problema_cardiaco,
-            dor_peito_atividade,
-            dor_peito_recente,
-            tontura_ou_perda_consciencia,
-            problema_osseo_articular,
-            medicacao_continua,
-            tratamento_pressao,
-            outra_condicao_saude,
-            modalidade,
-            dias,
-            horario,
-            motivo_inscricao,
-            outro_motivo,
-            recebe_auxilio,
-            participa_outro_projeto,
-            nome_projeto,
-            numero_pessoas_casa,
-            contato_emergencia,
-            parentesco,
-            telefone_emergencia,
-            nome_responsavel,
-            cpf_responsavel,
-            rg_responsavel,
-            data_autorizacao,
-            assinatura_responsavel
+    try:
+        cursor.execute(
+            """
+            INSERT INTO inscricoes (
+                usuario_id,
+                nome_aluno,
+                data_nascimento,
+                sexo,
+                rg,
+                cpf,
+                endereco,
+                bairro,
+                cep,
+                nome_mae,
+                nome_pai,
+                problema_cardiaco,
+                dor_peito_atividade,
+                dor_peito_recente,
+                tontura_ou_perda_consciencia,
+                problema_osseo_articular,
+                medicacao_continua,
+                tratamento_pressao,
+                outra_condicao_saude,
+                modalidade,
+                dias,
+                horario,
+                motivo_inscricao,
+                outro_motivo,
+                recebe_auxilio,
+                participa_outro_projeto,
+                nome_projeto,
+                numero_pessoas_casa,
+                contato_emergencia,
+                parentesco,
+                telefone_emergencia,
+                nome_responsavel,
+                cpf_responsavel,
+                rg_responsavel,
+                data_autorizacao,
+                assinatura_responsavel
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                session.get("usuario_id"),
+                nome_aluno,
+                data_nascimento,
+                sexo,
+                rg,
+                cpf,
+                endereco,
+                bairro,
+                cep,
+                nome_mae,
+                nome_pai,
+                problema_cardiaco,
+                dor_peito_atividade,
+                dor_peito_recente,
+                tontura_ou_perda_consciencia,
+                problema_osseo_articular,
+                medicacao_continua,
+                tratamento_pressao,
+                outra_condicao_saude,
+                modalidade,
+                dias,
+                horario,
+                motivo_inscricao,
+                outro_motivo,
+                recebe_auxilio,
+                participa_outro_projeto,
+                nome_projeto,
+                numero_pessoas_casa,
+                contato_emergencia,
+                parentesco,
+                telefone_emergencia,
+                nome_responsavel,
+                cpf_responsavel,
+                rg_responsavel,
+                data_autorizacao,
+                assinatura_responsavel
+            )
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """,
-        (
-            nome_aluno,
-            data_nascimento,
-            sexo,
-            rg,
-            cpf,
-            endereco,
-            bairro,
-            cep,
-            nome_mae,
-            nome_pai,
-            problema_cardiaco,
-            dor_peito_atividade,
-            dor_peito_recente,
-            tontura_ou_perda_consciencia,
-            problema_osseo_articular,
-            medicacao_continua,
-            tratamento_pressao,
-            outra_condicao_saude,
-            modalidade,
-            dias,
-            horario,
-            motivo_inscricao,
-            outro_motivo,
-            recebe_auxilio,
-            participa_outro_projeto,
-            nome_projeto,
-            numero_pessoas_casa,
-            contato_emergencia,
-            parentesco,
-            telefone_emergencia,
-            nome_responsavel,
-            cpf_responsavel,
-            rg_responsavel,
-            data_autorizacao,
-            assinatura_responsavel
-        )
-    )
 
-    conexao.commit()
+        conexao.commit()
+    except mysql.connector.Error as err:
+        conexao.rollback()
+        return {
+            "success": False,
+            "message": f"Erro ao salvar a inscrição: {err.msg}"
+        }
 
     return {
         "success": True,
