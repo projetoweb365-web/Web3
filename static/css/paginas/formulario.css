@@ -188,4 +188,17 @@
   color: #555;
   width: 100%; 
 }
+
 /*Fim do Formulário*/
+
+.mensagem-erro {
+    color: #b91c1c;
+    background-color: #fee2e2;
+    border: 1px solid #ff5656;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+}
