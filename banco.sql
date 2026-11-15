@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS centro_cidadania_do_brasil;
-USE centro_cidadania_do_brasil;
+-- CREATE DATABASE IF NOT EXISTS centro_cidadania_do_brasil;
+-- USE centro_cidadania_do_brasil;
 
 -- 1. Tabela de turmas
 CREATE TABLE IF NOT EXISTS turmas (
