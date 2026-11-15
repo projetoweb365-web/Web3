@@ -29,13 +29,13 @@
             <div class="tag-azul">
               <img src="static/images/check-shield.png" alt="Check"> SITUAÇÃO DA PRESENÇA
             </div>
-            <h2>Atenção necessária</h2>
-            <p>Existem 2 turmas sem chamada registrada hoje e 3 documentos aguardando envio.</p>
+            <h2>{{ banner_titulo }}</h2>
+            <p>{{ banner_texto }}</p>
           </div>
           <div class="banner-grafico">
-            <div class="grafico-circular">
+            <div class="grafico-circular" style="background: conic-gradient(#16a34a {{ presenca_pct or 0 }}%, #e5e7eb 0);">
               <div class="grafico-centro">
-                <span class="perc">87%</span>
+                <span class="perc">{% if presenca_pct is not none %}{{ presenca_pct }}%{% else %}—{% endif %}</span>
                 <span class="perc-label">PRESENÇA</span>
               </div>
             </div>
@@ -51,8 +51,8 @@
               <span class="seta-canto">↗</span>
             </div>
             <span class="label-cartao">PRESENÇA</span>
-            <h3>42 presentes</h3>
-            <p>6 ausentes hoje</p>
+            <h3>{{ presentes_hoje }} presente{{ '' if presentes_hoje == 1 else 's' }}</h3>
+            <p>{% if chamada_hoje %}{{ ausentes_hoje }} ausente{{ '' if ausentes_hoje == 1 else 's' }} hoje{% else %}Nenhuma chamada hoje{% endif %}</p>
           </a>
 
           <!-- Cartão 2 -->
@@ -62,8 +62,8 @@
               <span class="seta-canto">↗</span>
             </div>
             <span class="label-cartao">DOCUMENTOS</span>
-            <h3>18 válidos</h3>
-            <p>3 em atenção</p>
+            <h3>{{ total_docs }} documento{{ '' if total_docs == 1 else 's' }}</h3>
+            <p>{{ alunos_sem_doc }} aluno{{ '' if alunos_sem_doc == 1 else 's' }} sem documento</p>
           </a>
 
           <!-- Cartão 3 -->
@@ -73,8 +73,8 @@
               <span class="seta-canto">↗</span>
             </div>
             <span class="label-cartao">ALUNOS</span>
-            <h3>48 ativos</h3>
-            <p>5 novos no mês</p>
+            <h3>{{ total_alunos }} cadastrado{{ '' if total_alunos == 1 else 's' }}</h3>
+            <p>{{ total_turmas }} turma{{ '' if total_turmas == 1 else 's' }} · {{ alunos_sem_turma }} sem turma</p>
           </a>
 
           <!-- Cartão 4 -->
@@ -84,8 +84,8 @@
               <span class="seta-canto">↗</span>
             </div>
             <span class="label-cartao">FORMULÁRIOS</span>
-            <h3>5 pendentes</h3>
-            <p>2 críticos</p>
+            <h3>{{ total_inscricoes }} {{ 'inscrição' if total_inscricoes == 1 else 'inscrições' }}</h3>
+            <p>{% if ultima_inscricao %}Última: {{ ultima_inscricao }}{% else %}Nenhuma inscrição ainda{% endif %}</p>
           </a>
         </div>
 
@@ -95,61 +95,55 @@
           <!-- Coluna esquerda: proximos vencimentos -->
           <div class="col-vencimentos">
             <div class="topo-seccao">
-              <h2>Próximos vencimentos</h2>
-              <a href="#" class="link-azul">Ver todos</a>
+              <h2>Pendências e atividade recente</h2>
             </div>
-            
+
             <div class="lista-vencimentos">
-              <!-- Item 1 -->
+              {% for item in pendencias %}
               <div class="item-vencimento">
+                {% if item.tipo == 'vermelho' %}
                 <div class="icone-vencimento fundo-vermelho"><img src="static/images/red-alert.png" alt="Alerta"></div>
-                <div class="texto-vencimento">
-                  <h4>Chamada da turma de manhã</h4>
-                  <p>Sem registro desde ontem</p>
-                </div>
-                <a href="#" class="link-azul">Ver</a>
-              </div>
-
-              <!-- Item 2 -->
-              <div class="item-vencimento">
+                {% elif item.tipo == 'laranja' %}
                 <div class="icone-vencimento fundo-laranja"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAA7RJREFUeAHtncFOE0EYx7/ZqnCzvMGKcIebx3IA6wkeQZ4AaqymJ+tJoyTgE6BHb3prJcZy8wYPgGXfgHoggbSdcaYYgwQKdKb9vt3+fwkhsNumO79+38zs7H5LBAAAAAAAABg3FA2RzUKc796L1kipgiITG6KYRoL6klPdUqmWJCScoQjYLMZx1+S2iUyB+GhprRde7CT7JJiIArPxeHqtq6M95sZ35KMo+vFuMZ4jwQSNgI2l6Vf2HaskC9GREEyA++bbX1skE7ESggjo5XyXdhTlSS4iJQTpAzpaVYU3vkNkn+AdAWcjnuiQ0oOoSLhDnnRMtHKdRTv+T0jp1eMT2q82khYFxPY95nav+BcJIiR4pyBFarnfdtf4x6d6vlxLGqEb3wMx6ci/DzCm70HkSK8LavjziJDgL+CazvdZPflKcmGXEHwmnEJYJWRfgKGbpD82CZkXoI1ekCwh8wLcUFOyhLHoAyRLGJtOWKqEsRoFSZQwdsNQaRIyL8CtS1/8nyQJqRdgF/uTfts7k3Rpw0mRkHoBvTOtfXeIti+LAocECekXYNRuv+32VHncmYj2NpYerly2nVuC94LMdefjn9ebw7/2aCI6otESbFEn9RFQ6p3qNg0aLb1IcKuB5EkmRkFtZVZvmEJCku8atU2eZEJApZYkRtFrGjnKuy/IzDygXG9uMUjwvhIkUxOxcq1ZtSOCEkM6GpjMzYRdJLQjPW+M+UQpIJOnIlyfUP52+LSt9AP753pvlCQ0KryvC5JM5ez+gA9/fwZigOuObgUW5ZmBAGYggBkIYAYCmIEAZiCAGQhgBgKYgQBmIIAZCGAGApiBAGYggBkIYAYCmIEAZiCAGQhgBgKYgQBmIIAZCGAGApiBAGYggBkIYAYCmIEAZiCAGQhgBgKYgQBmIICZoQu4qlIJOCNA7ejB6vWkgasqrJzD+85LbwE+9Xok4z6zUXqz/16Gv1qKb70eabiGf1+cKXQm1J4iFffb15Dyrovt/wAHnno9InA3glc8n1XmHQFM9XrYsan3YyXAg+KCjIKY6vXwYY+1o3SQyiw5CsD3g1ZrcWbq1OazIo0BRlHlZf2wRgEIIsCx8+vo5+LslLISCpRhXE2icr35lgIRTIBj5+CoYSPhtzL0yHbvk5QlbNpx3/yQje8IKsDhImFh9v7nyJANB5XaSdj/mEY7Mk9CpZ3zDLWk5JtiHN810bI9gBUbu3MpeNhbDze7dxNMo9Tu8YneEvoQIgAAAAAAAEBK+QOtgqIpN7qPSgAAAABJRU5ErkJggg==" alt="Arquivo"></div>
-                <div class="texto-vencimento">
-                  <h4>Relatório mensal de presença</h4>
-                  <p>Vence em 3 dias</p>
-                </div>
-                <a href="#" class="link-azul">Ver</a>
-              </div>
-
-              <!-- Item 3 -->
-              <div class="item-vencimento">
+                {% else %}
                 <div class="icone-vencimento fundo-azul"><img src="data:image/png;base64,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" alt="Lista"></div>
+                {% endif %}
                 <div class="texto-vencimento">
-                  <h4>Inscrições de matrícula</h4>
-                  <p>Vence em 21 dias</p>
+                  <h4>{{ item.titulo }}</h4>
+                  <p>{{ item.texto }}</p>
                 </div>
-                <a href="#" class="link-azul">Ver</a>
+                <a href="{{ item.link }}" class="link-azul">Ver</a>
               </div>
+              {% else %}
+              <div class="item-vencimento">
+                <div class="texto-vencimento">
+                  <h4>Nenhuma pendência no momento</h4>
+                  <p>Cadastre alunos, registre chamadas e envie documentos para acompanhar aqui.</p>
+                </div>
+              </div>
+              {% endfor %}
             </div>
           </div>
 
           <!-- Coluna Direita-->
           <div class="col-resumo">
             <div class="topo-seccao">
-              <h2>Resumo do mês</h2>
+              <h2>Resumo geral</h2>
             </div>
             
             <div class="cartao-resumo">
               <div class="titulo-resumo">
                 <img src="static/images/check-circle.png" alt="Check"> 
-                <h4>9 itens regularizados</h4>
+                <h4>{{ alunos_com_doc }} aluno{{ '' if alunos_com_doc == 1 else 's' }} com documentos</h4>
               </div>
               
               <!-- Barra de Progresso -->
               <div class="barra-progresso-fundo">
-                <div class="barra-progresso-preenchimento" style="width: 75%;"></div>
+                <div class="barra-progresso-preenchimento" style="width: {{ pct_docs }}%;"></div>
               </div>
               
-              <p class="desc-resumo">9 de 12 itens do mês concluídos</p>
+              <p class="desc-resumo">{{ alunos_com_doc }} de {{ total_alunos }} alunos com documento enviado</p>
+              <p class="desc-resumo" style="margin-top: 8px;">{% if presenca_mes_pct is not none %}Presença no mês: {{ presenca_mes_pct }}%{% else %}Nenhuma chamada registrada neste mês{% endif %}</p>
             </div>
           </div>
 
@@ -159,6 +153,16 @@
     </main>
 
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+  <script>
+    // Recarrega os números quando o usuário volta para esta aba ou usa o botão "voltar"
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') location.reload();
+    });
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) location.reload();
+    });
+  </script>
 
 </body>
 </html>
