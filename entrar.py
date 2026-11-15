@@ -1,5 +1,5 @@
 from app import ccb, conexao, cursor
-from flask import request
+from flask import redirect, request, url_for, render_template, session
 
 
 @ccb.route("/login", methods=["POST"])
@@ -22,18 +22,19 @@ def entrar():
     usuario = cursor.fetchone()
 
     if not usuario:
-        return {
-            "success": False,
-            "message": "E-mail ou senha inválidos."
-        }
+        return render_template(
+            "login.html",
+            erro="E-mail ou senha inválidos."
+        )
 
     if usuario[3] != senha:
-        return {
-            "success": False,
-            "message": "E-mail ou senha inválidos."
-        }
+        return render_template(
+            "login.html",
+            erro="E-mail ou senha inválidos."
+        )
 
-    return {
-        "success": True,
-        "message": "Login realizado com sucesso!"
-    }
+    session["usuario_id"] = usuario[0]
+    session["usuario_nome"] = usuario[1]
+    session["usuario_email"] = usuario[2]
+
+    return redirect(url_for("home"))
