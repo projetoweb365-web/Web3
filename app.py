@@ -10,10 +10,11 @@ ccb.secret_key = "ccb_sistema_2026"
 sys.modules.setdefault("app", sys.modules[__name__])
 
 conexao = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="senha",
-    database="centro_cidadania_do_brasil"
+    host=os.environ.get("DB_HOST", "localhost"),
+    port=int(os.environ.get("DB_PORT", 3306)),
+    user=os.environ.get("DB_USER", "root"),
+    password=os.environ.get("DB_PASSWORD", "senha"),
+    database=os.environ.get("DB_NAME", "centro_cidadania_do_brasil")
 )
 
 cursor = conexao.cursor()
