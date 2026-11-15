@@ -82,7 +82,7 @@ data-inicial="{{ inicial }}">
           <div class="tabela-scroll">
           <table class="tabela-frequencia">
             <thead>
-              {% for matricula, nome in alunos %}
+              {% for matricula, nome, turma_nome, turma_id in alunos %}
               <tr>
                 <td><input type="checkbox"></td>
                 <td>{{ matricula }}</td>
