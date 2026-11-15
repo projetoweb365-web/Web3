@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Centro de Cidadania do Brasil</title>
+</head>
+<body>
+
+    <aside>
+        <div>
+            <div>
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Centro de Cidadania do Brasil">
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="/">Página Inicial</a></li>
+                    <li><a href="/presenca">Presença</a></li>
+                    <li><a href="/documentos">Documentos</a></li>
+                    <li><a href="/formulario">Formulário</a></li>
+                    <li><a href="/configuracoes">Configurações</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div>
+            <div>
+                <div></div>
+                <div>
+                    <div>Nome</div>
+                    <div>Plano</div>
+                </div>
+            </div>
+            <div>
+                <a href="/logout">Sair</a>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <h1>Perfil</h1>
+            <p>Preencha com as suas informações pessoais.</p>
+        </header>
+
+        <form action="/perfil" method="POST" enctype="multipart/form-data">
+            
+            <div>
+                <div>
+                    <div>
+                        <span>📷</span>
+                    </div>
+                    <label for="foto-input">Adicionar Foto</label>
+                    <input type="file" id="foto-input" name="foto" accept="image/*">
+                </div>
+            </div>
+
+            <div>
+                <h2>Dados Pessoais</h2>
+
+                <div>
+                    <div>
+                        <label for="nome">Nome completo *</label>
+                        <input type="text" id="nome" name="nome_completo" placeholder="Digite o nome completo" required>
+                    </div>
+
+                    <div>
+                        <label for="nascimento">Data de nascimento *</label>
+                        <input type="text" id="nascimento" name="data_nascimento" placeholder="dd/mm/aaaa" required>
+                    </div>
+                </div>
+
+                <div>
+                    <div>
+                        <label for="sexo">Sexo *</label>
+                        <select id="sexo" name="sexo" required>
+                            <option value="">Selecione</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                            <option value="O">Outro</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="cpf">CPF *</label>
+                        <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                    </div>
+
+                    <div>
+                        <label for="renda">Renda aproximada *</label>
+                        <select id="renda" name="renda" required>
+                            <option value="">Selecione</option>
+                            <option value="ate_1">Até 1 salário</option>
+                            <option value="1_a_2">1 a 2 salários</option>
+                            <option value="acima_2">Acima de 2 salários</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <div>
+                        <label for="cep">CEP *</label>
+                        <input type="text" id="cep" name="cep" placeholder="00000-000" required>
+                    </div>
+
+                    <div>
+                        <label for="horarios">Disponibilidade de horários *</label>
+                        <select id="horarios" name="horarios" required>
+                            <option value="">Selecione</option>
+                            <option value="manha">Manhã</option>
+                            <option value="tarde">Tarde</option>
+                            <option value="noite">Noite</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Contato</h3>
+                    <div>
+                        <div>
+                            <label for="email">E-mail *</label>
+                            <input type="email" id="email" name="email" placeholder="exemplo@email.com" required>
+                        </div>
+
+                        <div>
+                            <label for="telefone">Telefone *</label>
+                            <input type="tel" id="telefone" name="telefone" placeholder="+55 (00) 00000-0000" required>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>
